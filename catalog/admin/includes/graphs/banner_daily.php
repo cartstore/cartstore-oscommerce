@@ -1,19 +1,18 @@
 <?php
 /*
-  $Id$
+  $Id: banner_daily.php,v 1.2 2002/05/09 14:09:38 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
   include(DIR_WS_CLASSES . 'phplot.php');
 
-  $year = (($HTTP_GET_VARS['year']) ? $HTTP_GET_VARS['year'] : date('Y'));
-  $month = (($HTTP_GET_VARS['month']) ? $HTTP_GET_VARS['month'] : date('n'));
+  $year = (($_GET['year']) ? $_GET['year'] : date('Y'));
+  $month = (($_GET['month']) ? $_GET['month'] : date('n'));
 
   $days = (date('t', mktime(0,0,0,$month))+1);
   $stats = array();

@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: pm2checkout.php,v 1.19 2003/01/29 19:57:15 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2008 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class pm2checkout {
@@ -17,11 +17,8 @@
     function pm2checkout() {
       global $order;
 
-      $this->signature = '2checkout|pm2checkout|1.2|2.2';
-
       $this->code = 'pm2checkout';
       $this->title = MODULE_PAYMENT_2CHECKOUT_TEXT_TITLE;
-      $this->public_title = MODULE_PAYMENT_2CHECKOUT_TEXT_PUBLIC_TITLE;
       $this->description = MODULE_PAYMENT_2CHECKOUT_TEXT_DESCRIPTION;
       $this->sort_order = MODULE_PAYMENT_2CHECKOUT_SORT_ORDER;
       $this->enabled = ((MODULE_PAYMENT_2CHECKOUT_STATUS == 'True') ? true : false);
@@ -32,7 +29,7 @@
 
       if (is_object($order)) $this->update_status();
 
-      $this->form_action_url = 'https://www.2checkout.com/2co/buyer/purchase';
+      $this->form_action_url = 'https://www.2checkout.com/cgi-bin/Abuyers/purchase.2c';
     }
 
 // class methods
@@ -59,116 +56,143 @@
     }
 
     function javascript_validation() {
-      return false;
+      $js = '  if (payment_value == "' . $this->code . '") {' . "\n" .
+            '    var cc_number = document.checkout_payment.pm_2checkout_cc_number.value;' . "\n" .
+            '    if (cc_number == "" || cc_number.length < ' . CC_NUMBER_MIN_LENGTH . ') {' . "\n" .
+            '      error_message = error_message + "' . MODULE_PAYMENT_2CHECKOUT_TEXT_JS_CC_NUMBER . '";' . "\n" .
+            '      error = 1;' . "\n" .
+            '    }' . "\n" .
+            '  }' . "\n";
+
+      return $js;
     }
 
     function selection() {
-      return array('id' => $this->code,
-                   'module' => $this->public_title . (strlen(MODULE_PAYMENT_2CHECKOUT_TEXT_PUBLIC_DESCRIPTION) > 0 ? ' (' . MODULE_PAYMENT_2CHECKOUT_TEXT_PUBLIC_DESCRIPTION . ')' : ''));
+      global $order;
+
+      for ($i=1; $i < 13; $i++) {
+        $expires_month[] = array('id' => sprintf('%02d', $i), 'text' => strftime('%B',mktime(0,0,0,$i,1,2000)));
+      }
+
+      $today = getdate(); 
+      for ($i=$today['year']; $i < $today['year']+10; $i++) {
+        $expires_year[] = array('id' => strftime('%y',mktime(0,0,0,1,1,$i)), 'text' => strftime('%Y',mktime(0,0,0,1,1,$i)));
+      }
+
+      $selection = array('id' => $this->code,
+                         'module' => $this->title,
+                         'fields' => array(array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_OWNER_FIRST_NAME,
+                                                 'field' => tep_draw_input_field('pm_2checkout_cc_owner_firstname', $order->billing['firstname'])),
+                                           array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_OWNER_LAST_NAME,
+                                                 'field' => tep_draw_input_field('pm_2checkout_cc_owner_lastname', $order->billing['lastname'])),
+                                           array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_NUMBER,
+                                                 'field' => tep_draw_input_field('pm_2checkout_cc_number')),
+                                           array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_EXPIRES,
+                                                 'field' => tep_draw_pull_down_menu('pm_2checkout_cc_expires_month', $expires_month) . '&nbsp;' . tep_draw_pull_down_menu('pm_2checkout_cc_expires_year', $expires_year)),
+                                           array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_CHECKNUMBER,
+                                                 'field' => tep_draw_input_field('pm_2checkout_cc_cvv', '', 'size="4" maxlength="3"') . '&nbsp;<small>' . MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_CHECKNUMBER_LOCATION . '</small>')));
+
+      return $selection;
     }
 
     function pre_confirmation_check() {
-      if (MODULE_PAYMENT_2CHECKOUT_ROUTINE == 'Single-Page') {
-        $this->form_action_url = 'https://www.2checkout.com/checkout/spurchase';
-      }
-    }
+      global $_POST;
 
-    function confirmation() {
-      return false;
-    }
+      include(DIR_WS_CLASSES . 'cc_validation.php');
 
-    function process_button() {
-      global $HTTP_POST_VARS, $customer_id, $currencies, $currency, $order, $languages_id, $cartID;
+      $cc_validation = new cc_validation();
+      $result = $cc_validation->validate($_POST['pm_2checkout_cc_number'], $_POST['pm_2checkout_cc_expires_month'], $_POST['pm_2checkout_cc_expires_year']);
 
-      $process_button_string = tep_draw_hidden_field('sid', MODULE_PAYMENT_2CHECKOUT_LOGIN) .
-                               tep_draw_hidden_field('total', $this->format_raw($order->info['total'], MODULE_PAYMENT_2CHECKOUT_CURRENCY)) .
-                               tep_draw_hidden_field('cart_order_id', date('YmdHis') . '-' . $customer_id . '-' . $cartID) .
-                               tep_draw_hidden_field('fixed', 'Y') .
-                               tep_draw_hidden_field('first_name', $order->billing['firstname']) .
-                               tep_draw_hidden_field('last_name', $order->billing['lastname']) .
-                               tep_draw_hidden_field('street_address', $order->billing['street_address']) .
-                               tep_draw_hidden_field('city', $order->billing['city']) .
-                               tep_draw_hidden_field('state', $order->billing['state']) .
-                               tep_draw_hidden_field('zip', $order->billing['postcode']) .
-                               tep_draw_hidden_field('country', $order->billing['country']['title']) .
-                               tep_draw_hidden_field('email', $order->customer['email_address']) .
-                               tep_draw_hidden_field('phone', $order->customer['telephone']) .
-                               tep_draw_hidden_field('ship_name', $order->delivery['firstname'] . ' ' . $order->delivery['lastname']) .
-                               tep_draw_hidden_field('ship_street_address', $order->delivery['street_address']) .
-                               tep_draw_hidden_field('ship_city', $order->delivery['city']) .
-                               tep_draw_hidden_field('ship_state', $order->delivery['state']) .
-                               tep_draw_hidden_field('ship_zip', $order->delivery['postcode']) .
-                               tep_draw_hidden_field('ship_country', $order->delivery['country']['title']);
-
-      for ($i=0, $n=sizeof($order->products); $i<$n; $i++) {
-        $process_button_string .= tep_draw_hidden_field('c_prod_' . ($i+1), (int)$order->products[$i]['id'] . ',' . (int)$order->products[$i]['qty']) .
-                                  tep_draw_hidden_field('c_name_' . ($i+1), $order->products[$i]['name']) .
-                                  tep_draw_hidden_field('c_description_' . ($i+1), $order->products[$i]['name']) .
-                                  tep_draw_hidden_field('c_price_' . ($i+1), $this->format_raw(tep_add_tax($order->products[$i]['final_price'], $order->products[$i]['tax']), MODULE_PAYMENT_2CHECKOUT_CURRENCY));
-      }
-
-      $process_button_string .= tep_draw_hidden_field('id_type', '1') .
-                                tep_draw_hidden_field('skip_landing', '1');
-
-      if (MODULE_PAYMENT_2CHECKOUT_TESTMODE == 'Test') {
-        $process_button_string .= tep_draw_hidden_field('demo', 'Y');
-      }
-
-      $process_button_string .= tep_draw_hidden_field('return_url', tep_href_link(FILENAME_SHOPPING_CART));
-
-      $lang_query = tep_db_query("select code from " . TABLE_LANGUAGES . " where languages_id = '" . (int)$languages_id . "'");
-      $lang = tep_db_fetch_array($lang_query);
-
-      switch (strtolower($lang['code'])) {
-        case 'es':
-          $process_button_string .= tep_draw_hidden_field('lang', 'sp');
+      $error = '';
+      switch ($result) {
+        case -1:
+          $error = sprintf(TEXT_CCVAL_ERROR_UNKNOWN_CARD, substr($cc_validation->cc_number, 0, 4));
+          break;
+        case -2:
+        case -3:
+        case -4:
+          $error = TEXT_CCVAL_ERROR_INVALID_DATE;
+          break;
+        case false:
+          $error = TEXT_CCVAL_ERROR_INVALID_NUMBER;
           break;
       }
 
-      $process_button_string .= tep_draw_hidden_field('cart_brand_name', 'oscommerce') .
-                                tep_draw_hidden_field('cart_version_name', PROJECT_VERSION);
+      if ( ($result == false) || ($result < 1) ) {
+        $payment_error_return = 'payment_error=' . $this->code . '&error=' . urlencode($error) . '&pm_2checkout_cc_owner_firstname=' . urlencode($_POST['pm_2checkout_cc_owner_firstname']) . '&pm_2checkout_cc_owner_lastname=' . urlencode($_POST['pm_2checkout_cc_owner_lastname']) . '&pm_2checkout_cc_expires_month=' . $_POST['pm_2checkout_cc_expires_month'] . '&pm_2checkout_cc_expires_year=' . $_POST['pm_2checkout_cc_expires_year'];
+
+        tep_redirect(tep_href_link(FILENAME_CHECKOUT_PAYMENT, $payment_error_return, 'SSL', true, false));
+      }
+
+      $this->cc_card_type = $cc_validation->cc_type;
+      $this->cc_card_number = $cc_validation->cc_number;
+      $this->cc_expiry_month = $cc_validation->cc_expiry_month;
+      $this->cc_expiry_year = $cc_validation->cc_expiry_year;
+    }
+
+    function confirmation() {
+      global $_POST;
+
+      $confirmation = array('title' => $this->title . ': ' . $this->cc_card_type,
+                            'fields' => array(array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_OWNER,
+                                                    'field' => $_POST['pm_2checkout_cc_owner_firstname'] . ' ' . $_POST['pm_2checkout_cc_owner_lastname']),
+                                              array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_NUMBER,
+                                                    'field' => substr($this->cc_card_number, 0, 4) . str_repeat('X', (strlen($this->cc_card_number) - 8)) . substr($this->cc_card_number, -4)),
+                                              array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_CREDIT_CARD_EXPIRES,
+                                                    'field' => strftime('%B, %Y', mktime(0,0,0,$_POST['pm_2checkout_cc_expires_month'], 1, '20' . $_POST['pm_2checkout_cc_expires_year'])))));
+
+      return $confirmation;
+    }
+
+    function process_button() {
+      global $_POST, $order;
+
+      $process_button_string = tep_draw_hidden_field('x_login', MODULE_PAYMENT_2CHECKOUT_LOGIN) .
+                               tep_draw_hidden_field('x_amount', number_format($order->info['total'], 2)) .
+                               tep_draw_hidden_field('x_invoice_num', date('YmdHis')) .
+                               tep_draw_hidden_field('x_test_request', ((MODULE_PAYMENT_2CHECKOUT_TESTMODE == 'Test') ? 'Y' : 'N')) .
+                               tep_draw_hidden_field('x_card_num', $this->cc_card_number) .
+                               tep_draw_hidden_field('cvv', $_POST['pm_2checkout_cc_cvv']) .
+                               tep_draw_hidden_field('x_exp_date', $this->cc_expiry_month . substr($this->cc_expiry_year, -2)) .
+                               tep_draw_hidden_field('x_first_name', $_POST['pm_2checkout_cc_owner_firstname']) .
+                               tep_draw_hidden_field('x_last_name', $_POST['pm_2checkout_cc_owner_lastname']) .
+                               tep_draw_hidden_field('x_address', $order->customer['street_address']) .
+                               tep_draw_hidden_field('x_city', $order->customer['city']) .
+                               tep_draw_hidden_field('x_state', $order->customer['state']) .
+                               tep_draw_hidden_field('x_zip', $order->customer['postcode']) .
+                               tep_draw_hidden_field('x_country', $order->customer['country']['title']) .
+                               tep_draw_hidden_field('x_email', $order->customer['email_address']) .
+                               tep_draw_hidden_field('x_phone', $order->customer['telephone']) .
+                               tep_draw_hidden_field('x_ship_to_first_name', $order->delivery['firstname']) .
+                               tep_draw_hidden_field('x_ship_to_last_name', $order->delivery['lastname']) .
+                               tep_draw_hidden_field('x_ship_to_address', $order->delivery['street_address']) .
+                               tep_draw_hidden_field('x_ship_to_city', $order->delivery['city']) .
+                               tep_draw_hidden_field('x_ship_to_state', $order->delivery['state']) .
+                               tep_draw_hidden_field('x_ship_to_zip', $order->delivery['postcode']) .
+                               tep_draw_hidden_field('x_ship_to_country', $order->delivery['country']['title']) .
+                               tep_draw_hidden_field('x_receipt_link_url', tep_href_link(FILENAME_CHECKOUT_PROCESS, '', 'SSL')) .
+                               tep_draw_hidden_field('x_email_merchant', ((MODULE_PAYMENT_2CHECKOUT_EMAIL_MERCHANT == 'True') ? 'TRUE' : 'FALSE'));
 
       return $process_button_string;
     }
 
     function before_process() {
-      global $HTTP_POST_VARS;
+      global $_POST;
 
-      if ( ($HTTP_POST_VARS['credit_card_processed'] != 'Y') && ($HTTP_POST_VARS['credit_card_processed'] != 'K') ){
-        tep_redirect(tep_href_link(FILENAME_CHECKOUT_PAYMENT, 'payment_error=' . $this->code, 'SSL', true, false));
+      if ($_POST['x_response_code'] != '1') {
+        tep_redirect(tep_href_link(FILENAME_CHECKOUT_PAYMENT, 'error_message=' . urlencode(MODULE_PAYMENT_2CHECKOUT_TEXT_ERROR_MESSAGE), 'SSL', true, false));
       }
     }
 
     function after_process() {
-      global $HTTP_POST_VARS, $order, $insert_id;
-
-      if (MODULE_PAYMENT_2CHECKOUT_TESTMODE == 'Test') {
-        $sql_data_array = array('orders_id' => (int)$insert_id, 
-                                'orders_status_id' => (int)$order->info['order_status'], 
-                                'date_added' => 'now()', 
-                                'customer_notified' => '0',
-                                'comments' => MODULE_PAYMENT_2CHECKOUT_TEXT_WARNING_DEMO_MODE);
-
-        tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
-      }
-
-// The KEY value returned from the gateway is intentionally broken for Test transactions so it is only checked in Production mode
-      if (tep_not_null(MODULE_PAYMENT_2CHECKOUT_SECRET_WORD) && (MODULE_PAYMENT_2CHECKOUT_TESTMODE == 'Production')) {
-        if (strtoupper(md5(MODULE_PAYMENT_2CHECKOUT_SECRET_WORD . MODULE_PAYMENT_2CHECKOUT_LOGIN . $HTTP_POST_VARS['order_number'] . $this->order_format($order->info['total'], MODULE_PAYMENT_2CHECKOUT_CURRENCY))) != strtoupper($HTTP_POST_VARS['key'])) {
-          $sql_data_array = array('orders_id' => (int)$insert_id, 
-                                  'orders_status_id' => (int)$order->info['order_status'], 
-                                  'date_added' => 'now()', 
-                                  'customer_notified' => '0',
-                                  'comments' => MODULE_PAYMENT_2CHECKOUT_TEXT_WARNING_TRANSACTION_ORDER);
-
-          tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
-        }
-      }
+      return false;
     }
 
     function get_error() {
-      $error = array('title' => '',
-                     'error' => MODULE_PAYMENT_2CHECKOUT_TEXT_ERROR_MESSAGE);
+      global $_GET;
+
+      $error = array('title' => MODULE_PAYMENT_2CHECKOUT_TEXT_ERROR,
+                     'error' => stripslashes(urldecode($_GET['error'])));
 
       return $error;
     }
@@ -182,15 +206,13 @@
     }
 
     function install() {
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Enable 2Checkout', 'MODULE_PAYMENT_2CHECKOUT_STATUS', 'False', 'Do you want to accept 2CheckOut payments?', '6', '0', 'tep_cfg_select_option(array(\'True\', \'False\'), ', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Vendor Account', 'MODULE_PAYMENT_2CHECKOUT_LOGIN', '', 'The vendor account number for the 2Checkout gateway.', '6', '0', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Transaction Mode', 'MODULE_PAYMENT_2CHECKOUT_TESTMODE', 'Test', 'Transaction mode used for the 2Checkout gateway.', '6', '0', 'tep_cfg_select_option(array(\'Test\', \'Production\'), ', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Secret Word', 'MODULE_PAYMENT_2CHECKOUT_SECRET_WORD', '', 'The secret word to confirm transactions with. (Must be the same as defined on the Vendor Admin interface)', '6', '0', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Payment Routine', 'MODULE_PAYMENT_2CHECKOUT_ROUTINE', 'Multi-Page', 'The payment routine to use on the 2Checkout gateway.', '6', '0', 'tep_cfg_select_option(array(\'Multi-Page\', \'Single-Page\'), ', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Processing Currency', 'MODULE_PAYMENT_2CHECKOUT_CURRENCY', '" . DEFAULT_CURRENCY . "', 'The currency to process transactions in. (Must be the same as defined on the Vendor Admin interface)', '6', '0', 'pm2checkout::getCurrencies(', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Sort Order', 'MODULE_PAYMENT_2CHECKOUT_SORT_ORDER', '0', 'Sort order of display. (Lowest is displayed first)', '6', '0', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Enable 2CheckOut Module', 'MODULE_PAYMENT_2CHECKOUT_STATUS', 'True', 'Do you want to accept 2CheckOut payments?', '6', '0', 'tep_cfg_select_option(array(\'True\', \'False\'), ', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Login/Store Number', 'MODULE_PAYMENT_2CHECKOUT_LOGIN', '18157', 'Login/Store Number used for the 2CheckOut service', '6', '0', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Transaction Mode', 'MODULE_PAYMENT_2CHECKOUT_TESTMODE', 'Test', 'Transaction mode used for the 2Checkout service', '6', '0', 'tep_cfg_select_option(array(\'Test\', \'Production\'), ', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Merchant Notifications', 'MODULE_PAYMENT_2CHECKOUT_EMAIL_MERCHANT', 'True', 'Should 2CheckOut e-mail a receipt to the store owner?', '6', '0', 'tep_cfg_select_option(array(\'True\', \'False\'), ', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Sort order of display.', 'MODULE_PAYMENT_2CHECKOUT_SORT_ORDER', '0', 'Sort order of display. Lowest is displayed first.', '6', '0', now())");
       tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('Payment Zone', 'MODULE_PAYMENT_2CHECKOUT_ZONE', '0', 'If a zone is selected, only enable this payment method for that zone.', '6', '2', 'tep_get_zone_class_title', 'tep_cfg_pull_down_zone_classes(', now())");
-      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, use_function, date_added) values ('Set Order Status', 'MODULE_PAYMENT_2CHECKOUT_ORDER_STATUS_ID', '0', 'Set the status of orders made with this payment module to this value.', '6', '0', 'tep_cfg_pull_down_order_statuses(', 'tep_get_order_status_name', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, use_function, date_added) values ('Set Order Status', 'MODULE_PAYMENT_2CHECKOUT_ORDER_STATUS_ID', '0', 'Set the status of orders made with this payment module to this value', '6', '0', 'tep_cfg_pull_down_order_statuses(', 'tep_get_order_status_name', now())");
     }
 
     function remove() {
@@ -198,36 +220,7 @@
     }
 
     function keys() {
-      return array('MODULE_PAYMENT_2CHECKOUT_STATUS', 'MODULE_PAYMENT_2CHECKOUT_LOGIN', 'MODULE_PAYMENT_2CHECKOUT_TESTMODE', 'MODULE_PAYMENT_2CHECKOUT_SECRET_WORD', 'MODULE_PAYMENT_2CHECKOUT_ROUTINE', 'MODULE_PAYMENT_2CHECKOUT_CURRENCY', 'MODULE_PAYMENT_2CHECKOUT_ZONE', 'MODULE_PAYMENT_2CHECKOUT_ORDER_STATUS_ID', 'MODULE_PAYMENT_2CHECKOUT_SORT_ORDER');
-    }
-
-// format prices without currency formatting
-    function format_raw($number, $currency_code = '', $currency_value = '') {
-      global $currencies, $currency;
-
-      if (empty($currency_code) || !$currencies->is_set($currency_code)) {
-        $currency_code = $currency;
-      }
-
-      if (empty($currency_value) || !is_numeric($currency_value)) {
-        $currency_value = $currencies->currencies[$currency_code]['value'];
-      }
-
-      return number_format(tep_round($number * $currency_value, $currencies->currencies[$currency_code]['decimal_places']), $currencies->currencies[$currency_code]['decimal_places'], '.', '');
-    }
-
-    function getCurrencies($value, $key = '') {
-      $name = (($key) ? 'configuration[' . $key . ']' : 'configuration_value');
-
-      $currencies_array = array();
-
-      $currencies_query = tep_db_query("select code, title from " . TABLE_CURRENCIES . " order by title");
-      while ($currencies = tep_db_fetch_array($currencies_query)) {
-        $currencies_array[] = array('id' => $currencies['code'],
-                                    'text' => $currencies['title']);
-      }
-
-      return tep_draw_pull_down_menu($name, $currencies_array, $value);
+      return array('MODULE_PAYMENT_2CHECKOUT_STATUS', 'MODULE_PAYMENT_2CHECKOUT_LOGIN', 'MODULE_PAYMENT_2CHECKOUT_TESTMODE', 'MODULE_PAYMENT_2CHECKOUT_EMAIL_MERCHANT', 'MODULE_PAYMENT_2CHECKOUT_ZONE', 'MODULE_PAYMENT_2CHECKOUT_ORDER_STATUS_ID', 'MODULE_PAYMENT_2CHECKOUT_SORT_ORDER');
     }
   }
 ?>

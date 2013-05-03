@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: cod.php,v 1.7 2002/11/01 05:31:57 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
   define('MODULE_PAYMENT_COD_TEXT_TITLE', 'Cash on Delivery');

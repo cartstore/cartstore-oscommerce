@@ -1,70 +1,101 @@
+
 <?php
 /*
-  $Id$
+  $Id: column_left.php,v 1.15 2002/01/11 05:03:25 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
-
-  if (tep_session_is_registered('admin')) {
-    $cl_box_groups = array();
-
-    include(DIR_WS_BOXES . 'configuration.php');
-    include(DIR_WS_BOXES . 'catalog.php');
-    include(DIR_WS_BOXES . 'modules.php');
-    include(DIR_WS_BOXES . 'customers.php');
-    include(DIR_WS_BOXES . 'taxes.php');
-    include(DIR_WS_BOXES . 'localization.php');
-    include(DIR_WS_BOXES . 'reports.php');
-    include(DIR_WS_BOXES . 'tools.php');
-?>
-
-<div id="adminAppMenu">
-
-<?php
-    foreach ($cl_box_groups as $groups) {
-      echo '<h3><a href="#">' . $groups['heading'] . '</a></h3>' .
-           '<div><ul>';
-
-      foreach ($groups['apps'] as $app) {
-        echo '<li><a href="' . $app['link'] . '">' . $app['title'] . '</a></li>';
-      }
-
-      echo '</ul></div>';
-    }
-?>
-
-</div>
-
-<script type="text/javascript">
-$('#adminAppMenu').accordion({
-  autoHeight: false,
-  icons: {
-    'header': 'ui-icon-plus',
-    'headerSelected': 'ui-icon-minus'
+if (tep_admin_check_boxes('administrator.php') == true) {
+    require(DIR_WS_BOXES . 'administrator.php');
+  }
+  if (tep_admin_check_boxes('configuration.php') == true) {
+    require(DIR_WS_BOXES . 'configuration.php');
   }
 
-<?php
-    $counter = 0;
-    foreach ($cl_box_groups as $groups) {
-      foreach ($groups['apps'] as $app) {
-        if ($app['code'] == $PHP_SELF) {
-          echo ',active: ' . $counter;
-          break;
-        }
-      }
-
-      $counter++;
-    }
-?>
-
-});
-</script>
-
-<?php
+ if (tep_admin_check_boxes('catalog.php') == true) {
+    require(DIR_WS_BOXES . 'catalog.php');
   }
+
+   // MVS Start
+    if (tep_admin_check_boxes('vendors.php') == true) {
+    require(DIR_WS_BOXES . 'vendors.php');
+  }
+
+  // MVS End
+      if (tep_admin_check_boxes('articles.php') == true) {
+    require(DIR_WS_BOXES . 'articles.php');
+  }
+
+// Begin newsdesk
+   if (tep_admin_check_boxes('newsdesk.php') == true) {
+  require(DIR_WS_BOXES . 'newsdesk.php');
+  }
+
+// End newsdesk
+  
+ //  if (tep_admin_check_boxes('faqdesk.php') == true) {
+//   require(DIR_WS_BOXES . 'faqdesk.php');
+//  }
+//Family products: Begin Changed code
+ //     if (tep_admin_check_boxes('families.php') == true) {
+ //   require(DIR_WS_BOXES . 'families.php');
+ // }
+
+//Family: End Changed code
+      if (tep_admin_check_boxes('modules.php') == true) {
+    require(DIR_WS_BOXES . 'modules.php');
+  }
+
+      if (tep_admin_check_boxes('customers.php') == true) {
+    require(DIR_WS_BOXES . 'customers.php');
+  }
+
+// Start - CREDIT CLASS Gift Voucher Contribution
+      if (tep_admin_check_boxes('gv_admin.php') == true) {
+        require(DIR_WS_BOXES . 'gv_admin.php');
+	  }
+// End - CREDIT CLASS Gift Voucher Contribution
+
+
+     if (tep_admin_check_boxes('taxes.php') == true) {
+    require(DIR_WS_BOXES . 'taxes.php');
+  }
+
+if (tep_admin_check_boxes('localization.php') == true) {
+    require(DIR_WS_BOXES . 'localization.php');
+  }
+
+if (tep_admin_check_boxes('reports.php') == true) {
+    require(DIR_WS_BOXES . 'reports.php');
+  }
+if (tep_admin_check_boxes('affiliate.php') == true) {
+    require(DIR_WS_BOXES . 'affiliate.php');
+  }
+if (tep_admin_check_boxes('tools.php') == true) {
+    require(DIR_WS_BOXES . 'tools.php');
+  }
+//if (tep_admin_check_boxes('storefeed.php') == true) {
+ //   require(DIR_WS_BOXES . 'storefeed.php');
+ // }
+if (tep_admin_check_boxes('header_tags_controller.php') == true) {
+    require(DIR_WS_BOXES . 'header_tags_controller.php');
+  }
+
+if (tep_admin_check_boxes('gv_admin.php') == true) {
+    require(DIR_WS_BOXES . 'gv_admin.php');
+  }
+
+
+
+// VJ Links Manager v1.00 end
+  if (tep_admin_check_boxes('general_link.php') == true) {
+    require(DIR_WS_BOXES . 'general_link.php');
+  }
+
+
+
 ?>

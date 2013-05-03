@@ -1,17 +1,16 @@
 <?php
 /*
-  $Id$
+  $Id: psigate.php,v 1.3 2002/11/18 14:45:25 project3000 Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
   define('MODULE_PAYMENT_PSIGATE_TEXT_TITLE', 'PSiGate');
-  define('MODULE_PAYMENT_PSIGATE_TEXT_DESCRIPTION', 'Credit Card Test Info:<br /><br />CC#: 4111111111111111<br />Expiry: Any');
+  define('MODULE_PAYMENT_PSIGATE_TEXT_DESCRIPTION', 'Credit Card Test Info:<br><br>CC#: 4111111111111111<br>Expiry: Any');
   define('MODULE_PAYMENT_PSIGATE_TEXT_CREDIT_CARD_OWNER', 'Credit Card Owner:');
   define('MODULE_PAYMENT_PSIGATE_TEXT_CREDIT_CARD_NUMBER', 'Credit Card Number:');
   define('MODULE_PAYMENT_PSIGATE_TEXT_CREDIT_CARD_EXPIRES', 'Credit Card Expiry Date:');

@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: mail.php,v 1.8 2002/01/18 17:28:53 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
 define('HEADING_TITLE', 'Send Email To Customers');

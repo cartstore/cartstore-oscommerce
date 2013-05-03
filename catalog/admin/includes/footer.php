@@ -1,43 +1,37 @@
 <?php
 /*
-  $Id$
+  $Id: footer.php,v 1.12 2003/02/17 16:54:12 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2008 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 ?>
-<br />
-<table border="0" width="100%" cellspacing="0" cellpadding="2">
-  <tr>
-    <td align="center" class="smallText">
-<?php
-/*
-  The following copyright announcement is in compliance
-  to section 2c of the GNU General Public License, and
-  can not be removed, or can only be modified
-  appropriately with additional copyright notices.
+ 
+</div>
+		<div id="footer">
+			<div class="ftTop">
+				<div class="copy">CopyRight&copy; 2006-2013 Adoovo Inc. CartStore&#8482; is a trademark of Adoovo Inc.</div>
+				<div class="fnav">
+		
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="ftBottom">
+				<div class="bcopy"></div>	
+				<div class="fbnav">
+ 
+				</div>							
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+    
+ 
+</body>
+</html>
 
-  For more information please read the osCommerce
-  Copyright Policy at:
-
-  http://www.oscommerce.com/about/copyright
-
-  This comment must be left intact together with the
-  copyright announcement.
-*/
-?>
-osCommerce Online Merchant Copyright &copy; 2010 <a href="http://www.oscommerce.com" target="_blank">osCommerce</a><br />
-osCommerce provides no warranty and is redistributable under the <a href="http://www.fsf.org/licenses/gpl.txt" target="_blank">GNU General Public License</a>
-    </td>
-  </tr>
-  <tr>
-    <td><?php echo tep_image(DIR_WS_IMAGES . 'pixel_trans.gif', '', '1', '5'); ?></td>
-  </tr>
-  <tr>
-    <td align="center" class="smallText">Powered by <a href="http://www.oscommerce.com" target="_blank">osCommerce</a></td>
-  </tr>
-</table>

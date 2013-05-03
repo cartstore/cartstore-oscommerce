@@ -1,12 +1,12 @@
 /*
-  $Id$
+  $Id: general.js,v 1.3 2003/02/10 22:30:55 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 function SetFocus(TargetFormName) {
@@ -187,4 +187,15 @@ function IsLeapYear(intYear) {
   }
 
   return false;
+}
+
+function getObject(name) { 
+   var ns4 = (document.layers) ? true : false; 
+   var w3c = (document.getElementById) ? true : false; 
+   var ie4 = (document.all) ? true : false; 
+
+   if (ns4) return eval('document.' + name); 
+   if (w3c) return document.getElementById(name); 
+   if (ie4) return eval('document.all.' + name); 
+   return false; 
 }

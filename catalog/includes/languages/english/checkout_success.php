@@ -1,21 +1,20 @@
 <?php
 /*
-  $Id$
+  $Id: checkout_success.php,v 1.12 2003/04/15 17:47:42 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
 define('NAVBAR_TITLE_1', 'Checkout');
 define('NAVBAR_TITLE_2', 'Success');
 
-define('HEADING_TITLE', 'Your Order Has Been Processed!');
+define('HEADING_TITLE', 'Order Processed!');
 
-define('TEXT_SUCCESS', 'Your order has been successfully processed! Your products will arrive at their destination within 2-5 working days.');
+define('TEXT_SUCCESS', 'Your order has been successfully processed! ');
 define('TEXT_NOTIFY_PRODUCTS', 'Please notify me of updates to the products I have selected below:');
 define('TEXT_SEE_ORDERS', 'You can view your order history by going to the <a href="' . tep_href_link(FILENAME_ACCOUNT, '', 'SSL') . '">\'My Account\'</a> page and by clicking on <a href="' . tep_href_link(FILENAME_ACCOUNT_HISTORY, '', 'SSL') . '">\'History\'</a>.');
 define('TEXT_CONTACT_STORE_OWNER', 'Please direct any questions you have to the <a href="' . tep_href_link(FILENAME_CONTACT_US) . '">store owner</a>.');

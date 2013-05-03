@@ -1,148 +1,342 @@
-/*
-  $Id$
-
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
-
-  Copyright (c) 2010 osCommerce
-
-  Released under the GNU General Public License
-*/
-
-/* links */
-a { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #000000; font-weight: normal; text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-a.headerLink { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #ffffff; font-weight: bold; text-decoration: none; }
-a.headerLink:hover { text-decoration: underline; }
-
-a.menuBoxHeadingLink { font-size: 10px; color: #616060; font-weight: bold; text-decoration: none; }
-a.menuBoxHeadingLink:hover { }
-
-a.menuBoxContentLink { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #616060; font-weight: normal; text-decoration: none; }
-a.menuBoxContentLink:hover { text-decoration: underline; }
-
-a.splitPageLink { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #0000FF; font-weight: normal; text-decoration: none; }
-a.splitPageLink:hover { text-decoration: underline; background-color: #FFFF33; }
-
-/* menu box */
-.menuBoxHeading { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #616060; background-color: #ffffff; }
-.menuBoxContent { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #616060; }
-
-/* page */
-body { background-color: #ffffff; color: #000000; margin: 0px; }
-.headerBar { background-color: #B3BAC5; }
-.headerBarContent { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #ffffff; font-weight: bold; padding: 2px; }
-.columnLeft { background-color: #F0F1F1; border-color: #999999; border-width: 1px; border-style: solid; padding: 2px; }
-.pageHeading { font-family: Verdana, Arial, sans-serif; font-size: 18px; color: #727272; font-weight: bold; }
-
-/* data table */
-.dataTableHeadingRow { background-color: #C9C9C9; }
-.dataTableHeadingContent { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #ffffff; font-weight: bold; }
-.dataTableRow { background-color: #F0F1F1; }
-.dataTableRowSelected { background-color: #DEE4E8; }
-.dataTableRowOver { background-color: #FFFFFF; cursor: pointer; cursor: hand; }
-.dataTableContent { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #000000; }
-
-/* info box */
-.infoBoxHeading { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #ffffff; background-color: #B3BAC5; }
-.infoBoxContent { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #000000; background-color: #DEE4E8; }
-
-/* message box */
-
-.messageBox { font-family: Verdana, Arial, sans-serif; font-size: 10px; }
-.messageStackError, .messageStackWarning { font-family: Verdana, Arial, sans-serif; font-size: 10px; background-color: #ffb3b5; }
-.messageStackSuccess { font-family: Verdana, Arial, sans-serif; font-size: 10px; background-color: #99ff00; }
-
-/* forms */
-CHECKBOX, INPUT, RADIO, SELECT, TEXTAREA, FILE { font-family: Verdana, Arial, sans-serif; font-size: 11px; }
-FORM { display: inline; }
-
-/* account */
-.formArea { background-color: #f1f9fe; border-color: #7b9ebd; border-style: solid; border-width: 1px; }
-.formAreaTitle { font-family: Tahoma, Verdana, Arial, sans-serif; font-size: 12px; font-weight: bold; }
-
-/* attributes */
-.attributes-odd { background-color: #f4f7fd; }
-.attributes-even { background-color: #ffffff; }
-
-/* miscellaneous */
-.specialPrice { color: #ff0000; }
-.oldPrice { text-decoration: line-through; }
-.fieldRequired { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #ff0000; }
-.smallText { font-family: Verdana, Arial, sans-serif; font-size: 10px; }
-.main { font-family: Verdana, Arial, sans-serif; font-size: 12px; }
-.errorText { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #ff0000; }
-
-/* new messageStack styles */
-.secInfo, .secSuccess, .secWarning, .secError {
-  border: 1px solid;
-  margin: 10px 0px;
-  padding: 5px 10px 5px 50px;
-  background-repeat: no-repeat;
-  background-position: 10px center;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
+body {
+	background-color: #fff;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-size: 12px;
+	margin: 0px;
+	padding: 0px;
 }
-
-.secInfo {
-  border-color: #00529B;
-  background-image: url('../images/ms_info.png');
-  background: url('../images/ms_info.png') no-repeat 10px center, url('../images/ms_info_bg.png') repeat-x; /* css3 multiple backgrounds */
-  background-color: #BDE5F8;
+#bannerFluid {
+	height:55px;
+	margin-bottom:10px;
+	text-align:left;
+	width:100%;
+	margin-top: 0px;
+	background-attachment: scroll;
+	background-image: url(images/banner_bg.jpg);
+	background-repeat: repeat-x;
+	background-position: left top;
+	padding-top: 3px;
+	padding-right: 3px;
+	padding-bottom: 3px;
+	padding-left: 3px;
 }
-
-.secSuccess {
-  border-color: #4F8A10;
-  background-image: url('../images/ms_success.png');
-  background: url('../images/ms_success.png') no-repeat 10px center, url('../images/ms_success_bg.png') repeat-x; /* css3 multiple backgrounds */
-  background-color: #DFF2BF;
+#navFluid {
+	background:transparent url(images/menu_bg.jpg) repeat-x scroll left top;
+	height:43px;
 }
-
-.secWarning {
-  border-color: #9F6000;
-  background-color: #FEEFB3;
-  background-image: url('../images/ms_warning.png');
-  background: url('../images/ms_warning.png') no-repeat 10px center, url('../images/ms_warning_bg.png') repeat-x; /* css3 multiple backgrounds */
-  background-color: #FEEFB3;
+.logo_wrap {
+	float: left;
+	width: 150px;
+	padding-top: 6px;
+	padding-left: 6px;
 }
-
-.secError {
-  border-color: #D8000C;
-  background-image: url('../images/ms_error.png');
-  background: url('../images/ms_error.png') no-repeat 10px center, url('../images/ms_error_bg.png') repeat-x; /* css3 multiple backgrounds */
-  background-color: #FFBABA;
+h1, .pageHeading, .headerBar, .HTC_Head {
+	background:transparent url(images/border.png) repeat-x scroll left bottom;
+	color:#000000;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:30px;
+	font-weight:normal;
+	margin-bottom:20px;
+	padding-bottom:10px;
+	line-height: 30px;
 }
-
-.secInfo p, .secSuccess p, .secWarning p, .secError p {
-  padding: 2px;
+.content_col .pageHeading a, .content_col .pageHeading a:hover {
+	font-size:30px;
 }
-
-#adminAppMenu {
-  float: left;
-  width: 150px;
-  padding: 5px;
+.content_col {
+	padding-left: 10px;
+	padding-bottom: 10px;
+	background:transparent url(images/header_bg.jpg) repeat-x scroll left top;
+	text-align:left;
+	padding-right: 10px;
 }
-
-#adminAppMenu h3 {
+.content_col a {
+	color:#FF0000;
+	font-size:13px;
+	font-weight:bold;
+	text-decoration:none;
 }
-
-#adminAppMenu ul {
-  list-style: none;
-  margin: -5px 0 -5px -10px;
-  padding: 0;
+.content_col a:hover {
+	color:#FF0000;
+	font-size:13px;
+	font-weight:bold;
+	text-decoration:underline;
 }
-
-#contentText {
-  margin-left: 160px;
+#footerFluid {
+	background:#FFFFFF url(images/footer_bg.jpg) repeat-x scroll left top;
+	height:100px;
+	text-align:left;
+	width:100%;
 }
-
-/* Custom jQuery UI */
-.ui-widget { font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; font-size: 11px; }
-
-/* buttons */
-
-.tdbLink a { }
-
-.tdbLink button { }
+#footerNav {
+	height:46px;
+	line-height:50px;
+	margin-bottom:20px;
+	text-align:center;
+}
+#footerNav ul li {
+	display:inline;
+	padding:0 16px;
+}
+#footerNav ul li a:link, #footerNav ul li a:active, #footerNav ul li a:visited {
+	color:#CCCCCC;
+	font-size:12px;
+	text-transform:uppercase;
+}
+#footerNav ul li a:link, #footerNav ul li a:active, #footerNav ul li a:visited {
+	color:#CCCCCC;
+	font-size:12px;
+	text-transform:uppercase;
+}
+.copyright {
+	margin:0 auto;
+	text-align:center;
+	width:984px;
+}
+#nav li ul {
+	display:inline;
+	height:40px;
+	line-height:40px;
+}
+#nav ul {
+	margin:0 auto;
+	width:650px;
+}
+#nav ul li:first-child {
+	background-image:none;
+}
+#nav .menu li {
+	background:transparent url(images/sub_nav_seperator.jpg) no-repeat scroll left top;
+	display:inline;
+	float:none;
+	padding:0 5px 0 6px;
+}
+#nav li a:hover, #nav li.active a, #nav li:hover a, #nav li.sfhover a {
+menu.css;
+	color:#FFFFFF;
+}
+#nav li a {
+	display:inline;
+	float:none;
+	font-size:14px;
+	font-weight:normal;
+	height:40px;
+	letter-spacing:normal;
+	line-height:40px;
+	padding-left:20px;
+	text-decoration:none;
+	text-transform:none;
+}
+#nav li a {
+	display:block;
+	float:left;
+	font-size:12px;
+	font-weight:bold;
+	height:30px;
+	letter-spacing:-1px;
+	line-height:30px;
+	padding-left:20px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+#nav li a:hover, #nav li.active a, #nav li:hover a, #nav li.sfhover a {
+(line 54) color:#FFFFFF;
+}
+#nav li li a {
+	font-size:14px;
+	font-weight:normal;
+	letter-spacing:normal;
+	line-height:40px;
+	text-decoration:none;
+	text-transform:none;
+}
+.button {
+	background:transparent url(images/button.png) no-repeat scroll left top;
+	border:medium none;
+	color:#FFFFFF;
+	cursor:pointer;
+	font-size:16px;
+	font-weight:bold;
+	height:38px;
+	line-height:14px;
+	text-align:center;
+	text-transform:uppercase;
+	width:131px;
+	display: block;
+}
+.content_col .inputbox, .content_col select {
+	background:transparent url(images/inputbox_bg1.jpg) repeat-x scroll left top;
+	border:1px solid #DBDBDB;
+	font-size:14px;
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5;
+	margin-left: 5;
+	padding-top: 4px;
+	padding-right: 5px;
+	padding-bottom: 2px;
+	padding-left: 5px;
+}
+table.columnLeft {
+	padding-top: 5px;
+	margin-top: 5px;
+	display: block;
+	margin-right: 15px;
+	width: 200px;
+}
+.dataTableHeadingContent, .infoBoxHeading {
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #000000;
+	padding-left: 10px;
+}
+.infoBoxHeading {
+	text-align: center;
+}
+.dataTableContent {
+	font-size: 12px;
+	padding-left: 5px;
+}
+.dataTableRowOver, .dataTableRowSelected {
+	color: #FFFFFF;
+	background-color: #D20701;
+	cursor: pointer;
+}
+.infoBoxContent {
+	font-size: 12px;
+	color: #FFFFFF;
+	background-color: #D20701;
+	padding: 5px;
+}
+rowOverEffect {
+	color: #FFFFFF;
+	background-color: #D20701;
+}
+td {
+	font-size: 12px;
+}
+.messageStackSuccess {
+	color: #333333;
+	background-color: #00FF00;
+	height: 35px;
+	font-size: 14px;
+	font-weight: bold;
+	padding-left: 5px;
+}
+tr.prod_pg_box td {
+	border: thin dotted #999999;
+	padding-right: 5px;
+	padding-left: 5px;
+}
+.infoBoxContent a, .dataTableContent a {
+	font-weight: bold;
+	color: #515151;
+}
+.infoBoxContent a:hover, .dataTableContent a:hover {
+	font-weight: bold;
+	color: #515151;
+	text-decoration: underline;
+}
+.pageHeading a.menuBoxContentLink {
+	display: inline;
+}
+.required {
+	font-weight: bold;
+	color: #CC0000;
+	padding-right: 10px;
+}
+#rightCol {
+	float:left;
+	line-height:22px;
+	width:210px;
+}
+#rightCol .module {
+	background:transparent url(images/module-repeat.jpg) repeat-y scroll left top;
+	margin-bottom:13px;
+	position:relative;
+	width:210px;
+}
+#rightCol .module div {
+	background:transparent url(images/module-bottom.jpg) no-repeat scroll left bottom;
+	padding-bottom:40px;
+}
+#rightCol .module div div, #rightCol .module div div div div {
+	background-image:none;
+	margin:0;
+	padding:0;
+}
+#rightCol .module div div div {
+	background:transparent url(images/module-top.jpg) no-repeat scroll left top;
+	height:auto !important;
+	min-height:10px;
+	padding:0 6px 0 12px;
+}
+#rightCol .module div div, #rightCol .module div div div div {
+	background-image:none;
+	margin:0;
+	padding:0;
+}
+.hide_preview {
+	display: none;
+}
+.menuBoxContent {
+	background-color: #E1E1E1;
+	padding-right: 15px;
+	padding-left: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.menuBoxContent a.menuBoxContentLink {
+	background-image: url(/cartstoreadmin/includes/arrow.jpg);
+	background-repeat: no-repeat;
+	background-position: left center;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #000000;
+	padding-left: 15px;
+}
+td.menuBoxHeading {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	color: #ffffff;
+	background-image: url(/cartstoreadmin/includes/menu_head_active.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	text-align: center;
+	display: block;
+	height: 22px;
+	width: 200px;
+	line-height: 15px;
+	margin: 0px;
+	padding-top: 3px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+}
+a.menuBoxHeadingLink {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	color: #ffffff;
+	text-decoration: none;
+}
+a.menuBoxHeadingLink:hover {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	color: #ffffff;
+	text-decoration: none;
+}
+/* Supertracker Styles */
+.supertracker_text {font-family: Verdana, Arial, sans-serif; font-size: 11px;}
+.supertracker_contact {font-family: Verdana, Arial, sans-serif; font-size: 11px; background: #aaa; padding: 15px; margin: 10px 0px 10px 0px; border: 1px solid #000;}
+/* Supertracker Styles EOF */span.required {
+	font-weight: bold;
+	color: #CC0000;
+	margin-right: 5px;
+	margin-left: 5px;
+}

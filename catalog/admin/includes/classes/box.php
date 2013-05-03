@@ -1,20 +1,20 @@
 <?php
 /*
-  $Id$
+  $Id: box.php,v 1.7 2003/06/20 16:23:08 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 
   Example usage:
 
   $heading = array();
   $heading[] = array('params' => 'class="menuBoxHeading"',
                      'text'  => BOX_HEADING_TOOLS,
-                     'link'  => tep_href_link(basename($PHP_SELF));
+                     'link'  => tep_href_link(basename($PHP_SELF), tep_get_all_get_params(array('selected_box')) . 'selected_box=tools'));
 
   $contents = array();
   $contents[] = array('text'  => SOME_TEXT);
@@ -30,29 +30,37 @@
     }
 
     function infoBox($heading, $contents) {
-      $this->table_row_parameters = 'class="infoBoxHeading"';
-      $this->table_data_parameters = 'class="infoBoxHeading"';
-      $this->heading = $this->tableBlock($heading);
+	$replace = array("<b>", "</b>");
+	
+      $this->table_row_parameters = '';
+      $this->table_data_parameters = '';
+	 $heading[0]['text']='<div id="rightCol">
+				<div class="module">
+					<div><div><div><h3>'.str_replace($replace, "",$heading[0]['text']) .'</h3>';
+	  $this->heading = $this->tableBlock($heading);
 
       $this->table_row_parameters = '';
-      $this->table_data_parameters = 'class="infoBoxContent"';
+      $this->table_data_parameters = '';
+	  $arrayItem=count($contents)-1;
+	  $contents[$arrayItem]['text']=$contents[$arrayItem]['text'].'</div></div></div></div></div>';
+	  
       $this->contents = $this->tableBlock($contents);
 
       return $this->heading . $this->contents;
     }
 
     function menuBox($heading, $contents) {
-      $this->table_data_parameters = 'class="menuBoxHeading"';
+      $this->table_data_parameters = '';
       if (isset($heading[0]['link'])) {
-        $this->table_data_parameters .= ' onmouseover="this.style.cursor=\'hand\'" onclick="document.location.href=\'' . $heading[0]['link'] . '\'"';
-        $heading[0]['text'] = '&nbsp;<a href="' . $heading[0]['link'] . '" class="menuBoxHeadingLink">' . $heading[0]['text'] . '</a>&nbsp;';
+        $this->table_data_parameters .= '';
+        $heading[0]['text'] = '<a href="' . $heading[0]['link'] . '" class="menuBoxHeadingLink">' . $heading[0]['text'] . '</a>';
       } else {
-        $heading[0]['text'] = '&nbsp;' . $heading[0]['text'] . '&nbsp;';
+        $heading[0]['text'] = '' . $heading[0]['text'] . '';
       }
       $this->heading = $this->tableBlock($heading);
 
-      $this->table_data_parameters = 'class="menuBoxContent"';
-      $this->contents = (!empty($contents) ? $this->tableBlock($contents) : '');
+      $this->table_data_parameters = '';
+      $this->contents = $this->tableBlock($contents);
 
       return $this->heading . $this->contents;
     }

@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: product_reviews.php,v 1.6 2003/06/05 23:23:52 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 define('NAVBAR_TITLE', 'Reviews');

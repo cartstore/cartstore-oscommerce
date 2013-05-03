@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: account_notifications.php,v 1.2 2003/05/22 14:24:54 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   require('includes/application_top.php');
@@ -23,14 +23,14 @@
   $global_query = tep_db_query("select global_product_notifications from " . TABLE_CUSTOMERS_INFO . " where customers_info_id = '" . (int)$customer_id . "'");
   $global = tep_db_fetch_array($global_query);
 
-  if (isset($HTTP_POST_VARS['action']) && ($HTTP_POST_VARS['action'] == 'process') && isset($HTTP_POST_VARS['formid']) && ($HTTP_POST_VARS['formid'] == $sessiontoken)) {
-    if (isset($HTTP_POST_VARS['product_global']) && is_numeric($HTTP_POST_VARS['product_global'])) {
-      $product_global = tep_db_prepare_input($HTTP_POST_VARS['product_global']);
+  if (isset($_POST['action']) && ($_POST['action'] == 'process')) {
+    if (isset($_POST['product_global']) && is_numeric($_POST['product_global'])) {
+      $product_global = tep_db_prepare_input($_POST['product_global']);
     } else {
       $product_global = '0';
     }
 
-    (array)$products = $HTTP_POST_VARS['products'];
+    (array)$products = $_POST['products'];
 
     if ($product_global != $global['global_product_notifications']) {
       $product_global = (($global['global_product_notifications'] == '1') ? '0' : '1');
@@ -38,10 +38,9 @@
       tep_db_query("update " . TABLE_CUSTOMERS_INFO . " set global_product_notifications = '" . (int)$product_global . "' where customers_info_id = '" . (int)$customer_id . "'");
     } elseif (sizeof($products) > 0) {
       $products_parsed = array();
-      reset($products);
-      while (list(, $value) = each($products)) {
-        if (is_numeric($value)) {
-          $products_parsed[] = $value;
+      for ($i=0, $n=sizeof($products); $i<$n; $i++) {
+        if (is_numeric($products[$i])) {
+          $products_parsed[] = $products[$i];
         }
       }
 
@@ -70,95 +69,141 @@
   $breadcrumb->add(NAVBAR_TITLE_1, tep_href_link(FILENAME_ACCOUNT, '', 'SSL'));
   $breadcrumb->add(NAVBAR_TITLE_2, tep_href_link(FILENAME_ACCOUNT_NOTIFICATIONS, '', 'SSL'));
 
-  require(DIR_WS_INCLUDES . 'template_top.php');
-?>
+require(DIR_WS_INCLUDES . 'header.php'); 
+require(DIR_WS_INCLUDES . 'column_left.php'); ?>
 
-<h1><?php echo HEADING_TITLE; ?></h1>
 
-<?php echo tep_draw_form('account_notifications', tep_href_link(FILENAME_ACCOUNT_NOTIFICATIONS, '', 'SSL'), 'post', '', true) . tep_draw_hidden_field('action', 'process'); ?>
-
-<div class="contentContainer">
-  <h2><?php echo MY_NOTIFICATIONS_TITLE; ?></h2>
-
-  <div class="contentText">
-    <?php echo MY_NOTIFICATIONS_DESCRIPTION; ?>
-  </div>
-
-  <h2><?php echo GLOBAL_NOTIFICATIONS_TITLE; ?></h2>
-
-  <div class="contentText">
-    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+<!-- body_text //-->
+    <td width="100%" valign="top"><?php echo tep_draw_form('account_notifications', tep_href_link(FILENAME_ACCOUNT_NOTIFICATIONS, '', 'SSL')) . tep_draw_hidden_field('action', 'process'); ?><table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
-        <td width="30"><?php echo tep_draw_checkbox_field('product_global', '1', (($global['global_product_notifications'] == '1') ? true : false)); ?></td>
-        <td><strong><?php echo GLOBAL_NOTIFICATIONS_TITLE; ?></strong><br /><?php echo GLOBAL_NOTIFICATIONS_DESCRIPTION; ?></td>
+        <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td class="pageHeading"><?php echo HEADING_TITLE; ?></td>
+            <td align="right">&nbsp;</td>
+          </tr>
+        </table></td>
       </tr>
-    </table>
-  </div>
-
+      <tr>
+        <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
+      </tr>
+      <tr>
+        <td class="main"><b><?php echo MY_NOTIFICATIONS_TITLE; ?></b></td>
+      </tr>
+      <tr>
+        <td><table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
+          <tr class="infoBoxContents">
+            <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
+              <tr>
+                <td><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+                <td class="main"><?php echo MY_NOTIFICATIONS_DESCRIPTION; ?></td>
+                <td><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+              </tr>
+            </table></td>
+          </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
+      </tr>
+      <tr>
+        <td class="main"><b><?php echo GLOBAL_NOTIFICATIONS_TITLE; ?></b></td>
+      </tr>
+      <tr>
+        <td><table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
+          <tr class="infoBoxContents">
+            <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
+              <tr>
+                <td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+                <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
+                  <tr class="moduleRow" onMouseOver="rowOverEffect(this)" onMouseOut="rowOutEffect(this)" onClick="checkBox('product_global')">
+                    <td class="main" width="30"><?php echo tep_draw_checkbox_field('product_global', '1', (($global['global_product_notifications'] == '1') ? true : false), 'onclick="checkBox(\'product_global\')"'); ?></td>
+                    <td class="main"><b><?php echo GLOBAL_NOTIFICATIONS_TITLE; ?></b></td>
+                  </tr>
+                  <tr>
+                    <td width="30">&nbsp;</td>
+                    <td class="main"><?php echo GLOBAL_NOTIFICATIONS_DESCRIPTION; ?></td>
+                  </tr>
+                </table></td>
+                <td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+              </tr>
+            </table></td>
+          </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
+      </tr>
 <?php
   if ($global['global_product_notifications'] != '1') {
 ?>
-
-  <h2><?php echo NOTIFICATIONS_TITLE; ?></h2>
-
-  <div class="contentText">
-
+      <tr>
+        <td class="main"><b><?php echo NOTIFICATIONS_TITLE; ?></b></td>
+      </tr>
+      <tr>
+        <td><table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
+          <tr class="infoBoxContents">
+            <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
+              <tr>
+                <td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+                <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
 <?php
     $products_check_query = tep_db_query("select count(*) as total from " . TABLE_PRODUCTS_NOTIFICATIONS . " where customers_id = '" . (int)$customer_id . "'");
     $products_check = tep_db_fetch_array($products_check_query);
     if ($products_check['total'] > 0) {
 ?>
-
-    <div><?php echo NOTIFICATIONS_DESCRIPTION; ?></div>
-
-    <table border="0" width="100%" cellspacing="0" cellpadding="2">
-
+                  <tr>
+                    <td class="main" colspan="2"><?php echo NOTIFICATIONS_DESCRIPTION; ?></td>
+                  </tr>
 <?php
       $counter = 0;
       $products_query = tep_db_query("select pd.products_id, pd.products_name from " . TABLE_PRODUCTS_DESCRIPTION . " pd, " . TABLE_PRODUCTS_NOTIFICATIONS . " pn where pn.customers_id = '" . (int)$customer_id . "' and pn.products_id = pd.products_id and pd.language_id = '" . (int)$languages_id . "' order by pd.products_name");
       while ($products = tep_db_fetch_array($products_query)) {
 ?>
-
-      <tr>
-        <td width="30"><?php echo tep_draw_checkbox_field('products[' . $counter . ']', $products['products_id'], true); ?></td>
-        <td><strong><?php echo $products['products_name']; ?></strong></td>
-      </tr>
-
+                  <tr class="moduleRow" onMouseOver="rowOverEffect(this)" onMouseOut="rowOutEffect(this)" onClick="checkBox('products[<?php echo $counter; ?>]')">
+                    <td class="main" width="30"><?php echo tep_draw_checkbox_field('products[' . $counter . ']', $products['products_id'], true, 'onclick="checkBox(\'products[' . $counter . ']\')"'); ?></td>
+                    <td class="main"><b><?php echo $products['products_name']; ?></b></td>
+                  </tr>
 <?php
         $counter++;
       }
-?>
-
-    </table>
-
-<?php
     } else {
 ?>
-
-    <div>
-      <?php echo NOTIFICATIONS_NON_EXISTING; ?>
-    </div>
-
+                  <tr>
+                    <td class="main"><?php echo NOTIFICATIONS_NON_EXISTING; ?></td>
+                  </tr>
 <?php
     }
 ?>
-
-  </div>
-
+                </table></td>
+                <td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+              </tr>
+            </table></td>
+          </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
+      </tr>
 <?php
   }
 ?>
+      <tr>
+        <td><table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
+          <tr class="infoBoxContents">
+            <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
+              <tr>
+                <td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+                <td><?php echo '<a class="button" href="' . tep_href_link(FILENAME_ACCOUNT, '', 'SSL') . '">' .  IMAGE_BUTTON_BACK . '</a>'; ?></td>
+                <td align="right"><?php echo tep_image_submit('button_continue.gif', IMAGE_BUTTON_CONTINUE); ?></td>
+                <td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
+              </tr>
+            </table></td>
+          </tr>
+        </table></td>
+      </tr>
+    </table></form></td>
+<!-- body_text_eof //-->
 
-  <div class="buttonSet">
-    <span class="buttonAction"><?php echo tep_draw_button(IMAGE_BUTTON_CONTINUE, 'triangle-1-e', null, 'primary'); ?></span>
-
-    <?php echo tep_draw_button(IMAGE_BUTTON_BACK, 'triangle-1-w', tep_href_link(FILENAME_ACCOUNT, '', 'SSL')); ?>
-  </div>
-</div>
-
-</form>
-
-<?php
-  require(DIR_WS_INCLUDES . 'template_bottom.php');
-  require(DIR_WS_INCLUDES . 'application_bottom.php');
-?>
+<?php require(DIR_WS_INCLUDES . 'column_right.php'); 
+require(DIR_WS_INCLUDES . 'footer.php'); 
+require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>

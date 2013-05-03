@@ -1,22 +1,22 @@
 <?php
 /*
-  $Id$
+  $Id: popup_image.php,v 1.7 2003/06/20 00:40:23 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   require('includes/application_top.php');
 
-  reset($HTTP_GET_VARS);
-  while (list($key, ) = each($HTTP_GET_VARS)) {
+  reset($_GET);
+  while (list($key, ) = each($_GET)) {
     switch ($key) {
       case 'banner':
-        $banners_id = tep_db_prepare_input($HTTP_GET_VARS['banner']);
+        $banners_id = tep_db_prepare_input($_GET['banner']);
 
         $banner_query = tep_db_query("select banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where banners_id = '" . (int)$banners_id . "'");
         $banner = tep_db_fetch_array($banner_query);
@@ -32,11 +32,12 @@
     }
   }
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html <?php echo HTML_PARAMS; ?>>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title><?php echo $page_title; ?></title>
-<script type="text/javascript"><!--
+<script language="javascript"><!--
 var i=0;
 
 function resize() {
@@ -46,7 +47,7 @@ function resize() {
 //--></script>
 </head>
 
-<body onload="resize();">
+<body onLoad="resize();">
 
 <?php echo $image_source; ?>
 

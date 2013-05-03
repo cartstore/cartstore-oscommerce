@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: account_edit.php,v 1.8 2003/05/19 20:17:50 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 define('NAVBAR_TITLE_1', 'My Account');

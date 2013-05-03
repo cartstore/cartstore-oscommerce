@@ -1,16 +1,16 @@
 <?php
 /*
-  $Id$
+  $Id: form_check.js.php,v 1.9 2003/05/19 19:50:14 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 ?>
-<script type="text/javascript"><!--
+<script language="javascript"><!--
 var form = "";
 var submitted = false;
 var error = false;
@@ -20,7 +20,7 @@ function check_input(field_name, field_size, message) {
   if (form.elements[field_name] && (form.elements[field_name].type != "hidden")) {
     var field_value = form.elements[field_name].value;
 
-    if (field_value.length < field_size) {
+    if (field_value == '' || field_value.length < field_size) {
       error_message = error_message + "* " + message + "\n";
       error = true;
     }
@@ -63,11 +63,30 @@ function check_password(field_name_1, field_name_2, field_size, message_1, messa
     var password = form.elements[field_name_1].value;
     var confirmation = form.elements[field_name_2].value;
 
-    if (password.length < field_size) {
+    if (password == '' || password.length < field_size) {
       error_message = error_message + "* " + message_1 + "\n";
       error = true;
     } else if (password != confirmation) {
       error_message = error_message + "* " + message_2 + "\n";
+      error = true;
+    }
+  }
+}
+
+function check_password_new(field_name_1, field_name_2, field_name_3, field_size, message_1, message_2, message_3) {
+  if (form.elements[field_name_1] && (form.elements[field_name_1].type != "hidden")) {
+    var password_current = form.elements[field_name_1].value;
+    var password_new = form.elements[field_name_2].value;
+    var password_confirmation = form.elements[field_name_3].value;
+
+    if (password_current == '' || password_current.length < field_size) {
+      error_message = error_message + "* " + message_1 + "\n";
+      error = true;
+    } else if (password_new == '' || password_new.length < field_size) {
+      error_message = error_message + "* " + message_2 + "\n";
+      error = true;
+    } else if (password_new != password_confirmation) {
+      error_message = error_message + "* " + message_3 + "\n";
       error = true;
     }
   }
@@ -101,9 +120,15 @@ function check_form(form_name) {
 
   check_input("telephone", <?php echo ENTRY_TELEPHONE_MIN_LENGTH; ?>, "<?php echo ENTRY_TELEPHONE_NUMBER_ERROR; ?>");
 
+<?php
+// PWA BOF
+  if (!isset($_GET['guest'])) {
+?>
   check_password("password", "confirmation", <?php echo ENTRY_PASSWORD_MIN_LENGTH; ?>, "<?php echo ENTRY_PASSWORD_ERROR; ?>", "<?php echo ENTRY_PASSWORD_ERROR_NOT_MATCHING; ?>");
-  check_password("password_new", "password_confirmation", <?php echo ENTRY_PASSWORD_MIN_LENGTH; ?>, "<?php echo ENTRY_PASSWORD_NEW_ERROR; ?>", "<?php echo ENTRY_PASSWORD_NEW_ERROR_NOT_MATCHING; ?>");
-
+  check_password_new("password_current", "password_new", "password_confirmation", <?php echo ENTRY_PASSWORD_MIN_LENGTH; ?>, "<?php echo ENTRY_PASSWORD_ERROR; ?>", "<?php echo ENTRY_PASSWORD_NEW_ERROR; ?>", "<?php echo ENTRY_PASSWORD_NEW_ERROR_NOT_MATCHING; ?>");
+<?php
+  } // PWA EOF
+?>
   if (error == true) {
     alert(error_message);
     return false;
@@ -112,4 +137,5 @@ function check_form(form_name) {
     return true;
   }
 }
+
 //--></script>

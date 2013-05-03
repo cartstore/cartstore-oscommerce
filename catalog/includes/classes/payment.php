@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: payment.php,v 1.37 2003/06/09 22:26:32 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2012 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class payment {
@@ -17,8 +17,37 @@
     function payment($module = '') {
       global $payment, $language, $PHP_SELF;
 
-      if (defined('MODULE_PAYMENT_INSTALLED') && tep_not_null(MODULE_PAYMENT_INSTALLED)) {
-        $this->modules = explode(';', MODULE_PAYMENT_INSTALLED);
+/* CCGV - BEGIN */
+      if (defined('MODULE_PAYMENT_INSTALLED') && tep_not_null(MODULE_PAYMENT_INSTALLED) && ($module != 'credit_covers')) {
+        //$this->modules = explode(';', MODULE_PAYMENT_INSTALLED);
+		// BOF Separate Pricing Per Customer, next line original code
+		 //       $this->modules = explode(';', MODULE_PAYMENT_INSTALLED);
+		 global $sppc_customer_group_id, $customer_id;
+		 if(!tep_session_is_registered('sppc_customer_group_id')) {
+		 $customer_group_id = '0';
+		 } else {
+		  $customer_group_id = $sppc_customer_group_id;
+		 }
+	   $customer_payment_query = tep_db_query("select IF(c.customers_payment_allowed <> '', c.customers_payment_allowed, cg.group_payment_allowed) as payment_allowed from " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_GROUPS . " cg where c.customers_id = '" . $customer_id . "' and cg.customers_group_id =  '" . $customer_group_id . "'");
+	   if ($customer_payment = tep_db_fetch_array($customer_payment_query)  ) {
+		   if (tep_not_null($customer_payment['payment_allowed'])) {
+		  $temp_payment_array = explode(';', $customer_payment['payment_allowed']);
+		  $installed_modules = explode(';', MODULE_PAYMENT_INSTALLED);
+		  for ($n = 0; $n < sizeof($installed_modules) ; $n++) {
+			  // check to see if a payment method is not de-installed
+			  if ( in_array($installed_modules[$n], $temp_payment_array ) ) {
+				  $payment_array[] = $installed_modules[$n];
+			  }
+		  } // end for loop
+		  $this->modules = $payment_array;
+	   } else {
+		   $this->modules = explode(';', MODULE_PAYMENT_INSTALLED);
+	   }
+	   } else { // default
+		   $this->modules = explode(';', MODULE_PAYMENT_INSTALLED);
+	   }
+		 // EOF Separate Pricing Per Customer
+
 
         $include_modules = array();
 
@@ -43,7 +72,7 @@
 
 // if there is only one payment method, select it as default because in
 // checkout_confirmation.php the $payment variable is being assigned the
-// $HTTP_POST_VARS['payment'] value which will be empty (no radio button selection possible)
+// $_POST['payment'] value which will be empty (no radio button selection possible)
         if ( (tep_count_payment_modules() == 1) && (!isset($GLOBALS[$payment]) || (isset($GLOBALS[$payment]) && !is_object($GLOBALS[$payment]))) ) {
           $payment = $include_modules[0]['class'];
         }
@@ -62,25 +91,40 @@
    The following method is a work-around to implementing the method in all
    payment modules available which would break the modules in the contributions
    section. This should be looked into again post 2.2.
-*/   
+*/
     function update_status() {
       if (is_array($this->modules)) {
         if (is_object($GLOBALS[$this->selected_module])) {
-          if (method_exists($GLOBALS[$this->selected_module], 'update_status')) {
-            $GLOBALS[$this->selected_module]->update_status();
+          if (function_exists('method_exists')) {
+            if (method_exists($GLOBALS[$this->selected_module], 'update_status')) {
+              $GLOBALS[$this->selected_module]->update_status();
+            }
+          } else { // PHP3 compatibility
+            @call_user_method('update_status', $GLOBALS[$this->selected_module]);
           }
         }
       }
     }
 
-    function javascript_validation() {
+/* CCGV - BEGIN */
+  function javascript_validation($coversAll) {
       $js = '';
       if (is_array($this->modules)) {
+        if ($coversAll) {
+          $addThis='if (document.checkout_payment.cot_gv.checked) {
+            payment_value=\'cot_gv\';
+          } else ';
+        } else {
+          $addThis='';
+        }
+/* CCGV - END */
         $js = '<script type="text/javascript"><!-- ' . "\n" .
               'function check_form() {' . "\n" .
               '  var error = 0;' . "\n" .
               '  var error_message = "' . JS_ERROR . '";' . "\n" .
-              '  var payment_value = null;' . "\n" .
+/* CCGV - BEGIN */
+              '  var payment_value = null;' . "\n" .$addThis . 
+/* CCGV - END */
               '  if (document.checkout_payment.payment.length) {' . "\n" .
               '    for (var i=0; i<document.checkout_payment.payment.length; i++) {' . "\n" .
               '      if (document.checkout_payment.payment[i].checked) {' . "\n" .
@@ -101,11 +145,13 @@
           }
         }
 
-        $js .= "\n" . '  if (payment_value == null) {' . "\n" .
+/* CCGV - BEGIN */
+        $js .= "\n" . '  if (payment_value == null && submitter != 1) {' . "\n" . 
                '    error_message = error_message + "' . JS_ERROR_NO_PAYMENT_MODULE_SELECTED . '";' . "\n" .
                '    error = 1;' . "\n" .
                '  }' . "\n\n" .
-               '  if (error == 1) {' . "\n" .
+               '  if (error == 1 && submitter != 1) {' . "\n" .
+/* CCGV - END */
                '    alert(error_message);' . "\n" .
                '    return false;' . "\n" .
                '  } else {' . "\n" .
@@ -151,10 +197,27 @@
       return $selection_array;
     }
 
+/* CCGV - BEGIN */
+  function check_credit_covers() {
+  	global $credit_covers;
+
+  	return $credit_covers;
+  }
+/* CCGV - END */
+
     function pre_confirmation_check() {
+/* CCGV - BEGIN */
+      global $credit_covers, $payment_modules; 
       if (is_array($this->modules)) {
         if (is_object($GLOBALS[$this->selected_module]) && ($GLOBALS[$this->selected_module]->enabled) ) {
-          $GLOBALS[$this->selected_module]->pre_confirmation_check();
+          if ($credit_covers) {
+            $GLOBALS[$this->selected_module]->enabled = false;
+            $GLOBALS[$this->selected_module] = NULL;
+            $payment_modules = '';
+          } else {
+            $GLOBALS[$this->selected_module]->pre_confirmation_check();
+          }
+/* CCGV - END */
         }
       }
     }
@@ -198,5 +261,22 @@
         }
       }
     }
+		//---PayPal WPP Modification START ---//
+		function ec_step1() {
+      if (is_array($this->modules)) {
+        if (is_object($GLOBALS[$this->selected_module]) && ($GLOBALS[$this->selected_module]->enabled) ) {
+          return $GLOBALS[$this->selected_module]->ec_step1();
+        }
+      }
+		}
+
+		function ec_step2() {
+      if (is_array($this->modules)) {
+        if (is_object($GLOBALS[$this->selected_module]) && ($GLOBALS[$this->selected_module]->enabled) ) {
+          return $GLOBALS[$this->selected_module]->ec_step2();
+        }
+      }
+		}
+		//---PayPal WPP Modification END---//
   }
 ?>

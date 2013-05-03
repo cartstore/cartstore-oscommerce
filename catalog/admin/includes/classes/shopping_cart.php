@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: shopping_cart.php,v 1.10 2003/06/23 01:18:56 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class shoppingCart {

@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: message_stack.php,v 1.1 2003/05/19 19:45:42 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 
   Example usage:
 
@@ -36,13 +35,24 @@
 // class methods
     function add($class, $message, $type = 'error') {
       if ($type == 'error') {
-        $this->messages[] = array('params' => 'class="messageStackError"', 'class' => $class, 'text' => tep_image(DIR_WS_ICONS . 'error.gif', ICON_ERROR) . '&nbsp;' . $message);
+        $this->messages[] = array('params' => '', 'class' => $class, 'text' =>  '<div class="ui-widget"><div style="padding: 0pt 0.7em;" class="ui-state-error ui-corner-all">
+	<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' . $message .'</p>
+				</div>
+			</div>');
       } elseif ($type == 'warning') {
-        $this->messages[] = array('params' => 'class="messageStackWarning"', 'class' => $class, 'text' => tep_image(DIR_WS_ICONS . 'warning.gif', ICON_WARNING) . '&nbsp;' . $message);
+        $this->messages[] = array('params' => '', 'class' => $class, 'text' => '<div class="ui-widget"><div style="padding: 0pt 0.7em;" class="ui-state-error ui-corner-all">
+	<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' . $message .'</p>
+				</div>
+              </div>
+			 ');
       } elseif ($type == 'success') {
-        $this->messages[] = array('params' => 'class="messageStackSuccess"', 'class' => $class, 'text' => tep_image(DIR_WS_ICONS . 'success.gif', ICON_SUCCESS) . '&nbsp;' . $message);
+        $this->messages[] = array('params' => '', 'class' => $class, 'text' => '<div class="ui-widget">
+				<div style="margin-top: 20px; padding: 0pt 0.7em;" class="ui-state-highlight ui-corner-all">
+					<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' . $message . '</p>
+				</div>
+			</div>');
       } else {
-        $this->messages[] = array('params' => 'class="messageStackError"', 'class' => $class, 'text' => $message);
+        $this->messages[] = array('params' => '', 'class' => $class, 'text' => $message);
       }
     }
 
@@ -62,7 +72,7 @@
     }
 
     function output($class) {
-      $this->table_data_parameters = 'class="messageBox"';
+      $this->table_data_parameters = '';
 
       $output = array();
       for ($i=0, $n=sizeof($this->messages); $i<$n; $i++) {

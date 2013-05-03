@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: cache.php,v 1.11 2003/07/01 14:34:54 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2006 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 ////
@@ -98,18 +98,13 @@
 //! Cache the categories box
 // Cache the categories box
   function tep_cache_categories_box($auto_expire = false, $refresh = false) {
-    global $cPath, $language;
-
-    $cache_output = '';
+    global $cPath, $language, $languages_id, $tree, $cPath_array, $categories_string;
 
     if (($refresh == true) || !read_cache($cache_output, 'categories_box-' . $language . '.cache' . $cPath, $auto_expire)) {
-      if (!class_exists('bm_categories')) {
-        include(DIR_WS_MODULES . 'boxes/bm_categories.php');
-      }
-
-      $bm_categories = new bm_categories();
-      $cache_output = $bm_categories->getData();
-
+      ob_start();
+      include(DIR_WS_BOXES . 'categories.php');
+      $cache_output = ob_get_contents();
+      ob_end_clean();
       write_cache($cache_output, 'categories_box-' . $language . '.cache' . $cPath);
     }
 
@@ -120,23 +115,18 @@
 //! Cache the manufacturers box
 // Cache the manufacturers box
   function tep_cache_manufacturers_box($auto_expire = false, $refresh = false) {
-    global $HTTP_GET_VARS, $language;
-
-    $cache_output = '';
+    global $_GET, $language;
 
     $manufacturers_id = '';
-    if (isset($HTTP_GET_VARS['manufacturers_id']) && is_numeric($HTTP_GET_VARS['manufacturers_id'])) {
-      $manufacturers_id = $HTTP_GET_VARS['manufacturers_id'];
+    if (isset($_GET['manufactuers_id']) && tep_not_null($_GET['manufacturers_id'])) {
+      $manufacturers_id = $_GET['manufacturers_id'];
     }
 
     if (($refresh == true) || !read_cache($cache_output, 'manufacturers_box-' . $language . '.cache' . $manufacturers_id, $auto_expire)) {
-      if (!class_exists('bm_manufacturers')) {
-        include(DIR_WS_MODULES . 'boxes/bm_manufacturers.php');
-      }
-
-      $bm_manufacturers = new bm_manufacturers();
-      $cache_output = $bm_manufacturers->getData();
-
+      ob_start();
+      include(DIR_WS_BOXES . 'manufacturers.php');
+      $cache_output = ob_get_contents();
+      ob_end_clean();
       write_cache($cache_output, 'manufacturers_box-' . $language . '.cache' . $manufacturers_id);
     }
 
@@ -147,18 +137,14 @@
 //! Cache the also purchased module
 // Cache the also purchased module
   function tep_cache_also_purchased($auto_expire = false, $refresh = false) {
-    global $HTTP_GET_VARS, $language, $languages_id;
+    global $_GET, $language, $languages_id;
 
-    $cache_output = '';
-
-    if (isset($HTTP_GET_VARS['products_id']) && is_numeric($HTTP_GET_VARS['products_id'])) {
-      if (($refresh == true) || !read_cache($cache_output, 'also_purchased-' . $language . '.cache' . $HTTP_GET_VARS['products_id'], $auto_expire)) {
-        ob_start();
-        include(DIR_WS_MODULES . FILENAME_ALSO_PURCHASED_PRODUCTS);
-        $cache_output = ob_get_contents();
-        ob_end_clean();
-        write_cache($cache_output, 'also_purchased-' . $language . '.cache' . $HTTP_GET_VARS['products_id']);
-      }
+    if (($refresh == true) || !read_cache($cache_output, 'also_purchased-' . $language . '.cache' . $_GET['products_id'], $auto_expire)) {
+      ob_start();
+      include(DIR_WS_MODULES . FILENAME_ALSO_PURCHASED_PRODUCTS);
+      $cache_output = ob_get_contents();
+      ob_end_clean();
+      write_cache($cache_output, 'also_purchased-' . $language . '.cache' . $_GET['products_id']);
     }
 
     return $cache_output;

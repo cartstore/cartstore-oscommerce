@@ -1,19 +1,19 @@
 <?php
 /*
-  $Id$
+  $Id: split_page_results.php,v 1.13 2003/05/05 17:56:50 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
   class splitPageResults {
     function splitPageResults(&$current_page_number, $max_rows_per_page, &$sql_query, &$query_num_rows) {
       if (empty($current_page_number)) $current_page_number = 1;
 
+/*
       $pos_to = strlen($sql_query);
       $pos_from = strpos($sql_query, ' from', 0);
 
@@ -29,6 +29,9 @@
       $reviews_count_query = tep_db_query("select count(*) as total " . substr($sql_query, $pos_from, ($pos_to - $pos_from)));
       $reviews_count = tep_db_fetch_array($reviews_count_query);
       $query_num_rows = $reviews_count['total'];
+*/
+	 $reviews_count_query = tep_db_query( $sql_query );
+	 $query_num_rows = tep_db_num_rows( $reviews_count_query );
 
       $num_pages = ceil($query_num_rows / $max_rows_per_page);
       if ($current_page_number > $num_pages) {
@@ -60,7 +63,7 @@
           $display_links .= PREVNEXT_BUTTON_PREV . '&nbsp;&nbsp;';
         }
 
-        $display_links .= sprintf(TEXT_RESULT_PAGE, tep_draw_pull_down_menu($page_name, $pages_array, $current_page_number, 'onchange="this.form.submit();"'), $num_pages);
+        $display_links .= sprintf(TEXT_RESULT_PAGE, tep_draw_pull_down_menu($page_name, $pages_array, $current_page_number, 'onChange="this.form.submit();"'), $num_pages);
 
         if (($current_page_number < $num_pages) && ($num_pages != 1)) {
           $display_links .= '&nbsp;&nbsp;<a href="' . tep_href_link(basename($PHP_SELF), $parameters . $page_name . '=' . ($current_page_number + 1), 'NONSSL') . '" class="splitPageLink">' . PREVNEXT_BUTTON_NEXT . '</a>';
@@ -77,7 +80,9 @@
           }
         }
 
-        $display_links .= tep_hide_session_id() . '</form>';
+        if (SID) $display_links .= tep_draw_hidden_field(tep_session_name(), tep_session_id());
+
+        $display_links .= '</form>';
       } else {
         $display_links = sprintf(TEXT_RESULT_PAGE, $num_pages, $num_pages);
       }

@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: message_stack.php,v 1.6 2003/06/20 16:23:08 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 
   Example usage:
 
@@ -35,13 +35,26 @@
 
     function add($message, $type = 'error') {
       if ($type == 'error') {
-        $this->errors[] = array('params' => 'class="messageStackError"', 'text' => tep_image(DIR_WS_ICONS . 'error.gif', ICON_ERROR) . '&nbsp;' . $message);
+        $this->errors[] = array('params' => '<div class="ui-widget"><div style="padding: 0pt 0.7em;" class="ui-state-error ui-corner-all"> 
+	<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>
+', 'text' => $message.'</p>
+				</div>
+			</div>');
       } elseif ($type == 'warning') {
-        $this->errors[] = array('params' => 'class="messageStackWarning"', 'text' => tep_image(DIR_WS_ICONS . 'warning.gif', ICON_WARNING) . '&nbsp;' . $message);
+        $this->errors[] = array('params' => '<div class="ui-widget"><div style="padding: 0pt 0.7em;" class="ui-state-highlight ui-corner-all"> 
+	<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>', 'text' =>  $message.'</p>
+				</div>
+			</div>');
       } elseif ($type == 'success') {
-        $this->errors[] = array('params' => 'class="messageStackSuccess"', 'text' => tep_image(DIR_WS_ICONS . 'success.gif', ICON_SUCCESS) . '&nbsp;' . $message);
+        $this->errors[] = array('params' => '<div class="ui-widget"><div style="padding: 0pt 0.7em;" class="ui-state-highlight ui-corner-all"> 
+	<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>', 'text' =>  $message.'</p>
+				</div>
+			</div>');
       } else {
-        $this->errors[] = array('params' => 'class="messageStackError"', 'text' => $message);
+        $this->errors[] = array('params' => '<div class="ui-widget"><div style="padding: 0pt 0.7em;" class="ui-state-error ui-corner-all"> 
+	<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>', 'text' => $message.'</p>
+				</div>
+			</div>');
       }
 
       $this->size++;

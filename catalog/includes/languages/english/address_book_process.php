@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: address_book_process.php,v 1.9 2003/05/22 14:39:32 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 define('NAVBAR_TITLE_1', 'My Account');

@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: ot_tax.php,v 1.14 2003/02/14 05:58:35 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class ot_tax {

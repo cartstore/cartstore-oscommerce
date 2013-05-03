@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: application_bottom.php,v 1.14 2003/02/10 22:30:41 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 // close session (store variables)

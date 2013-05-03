@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: banner_yearly.php,v 1.3 2002/05/09 18:28:46 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
   include(DIR_WS_CLASSES . 'phplot.php');

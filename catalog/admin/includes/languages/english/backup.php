@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: backup.php,v 1.16 2002/03/16 21:30:02 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
 define('HEADING_TITLE', 'Database Backup Manager');
@@ -20,9 +19,9 @@ define('TABLE_HEADING_ACTION', 'Action');
 define('TEXT_INFO_HEADING_NEW_BACKUP', 'New Backup');
 define('TEXT_INFO_HEADING_RESTORE_LOCAL', 'Restore Local');
 define('TEXT_INFO_NEW_BACKUP', 'Do not interrupt the backup process which might take a couple of minutes.');
-define('TEXT_INFO_UNPACK', '<br /><br />(after unpacking the file from the archive)');
-define('TEXT_INFO_RESTORE', 'Do not interrupt the restoration process.<br /><br />The larger the backup, the longer this process takes!<br /><br />If possible, use the mysql client.<br /><br />For example:<br /><br /><strong>mysql -h' . DB_SERVER . ' -u' . DB_SERVER_USERNAME . ' -p ' . DB_DATABASE . ' < %s </strong> %s');
-define('TEXT_INFO_RESTORE_LOCAL', 'Do not interrupt the restoration process.<br /><br />The larger the backup, the longer this process takes!');
+define('TEXT_INFO_UNPACK', '<br><br>(after unpacking the file from the archive)');
+define('TEXT_INFO_RESTORE', 'Do not interrupt the restoration process.<br><br>The larger the backup, the longer this process takes!<br><br>If possible, use the mysql client.<br><br>For example:<br><br><b>mysql -h' . DB_SERVER . ' -u' . DB_SERVER_USERNAME . ' -p ' . DB_DATABASE . ' < %s </b> %s');
+define('TEXT_INFO_RESTORE_LOCAL', 'Do not interrupt the restoration process.<br><br>The larger the backup, the longer this process takes!');
 define('TEXT_INFO_RESTORE_LOCAL_RAW_FILE', 'The file uploaded must be a raw sql (text) file.');
 define('TEXT_INFO_DATE', 'Date:');
 define('TEXT_INFO_SIZE', 'Size:');

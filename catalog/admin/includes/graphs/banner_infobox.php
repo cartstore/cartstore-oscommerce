@@ -1,13 +1,13 @@
 <?php
+
 /*
-  $Id$
+  $Id: banner_infobox.php,v 1.3 2003/07/11 18:15:42 project3000 Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
   include(DIR_WS_CLASSES . 'phplot.php');
@@ -20,7 +20,7 @@
 
   if (sizeof($stats) < 1) $stats = array(array(date('j'), 0, 0));
 
-  $graph = new PHPlot(200, 220, 'images/graphs/banner_infobox-' . $banner_id . '.' . $banner_extension);
+  $graph = new PHPlot(200, 220, 'images/graphs/banner_infobox-test-' . $banner_id . '.' . $banner_extension);
 
   $graph->SetFileFormat($banner_extension);
   $graph->SetIsInline(1);
@@ -36,7 +36,7 @@
   $graph->SetMarginsPixels(15,15,15,30);
 
   $graph->SetTitleFontSize('4');
-  $graph->SetTitle(TEXT_BANNERS_LAST_3_DAYS);
+  $graph->SetTitle('TEXT_BANNERS_LAST_3_DAYS');
 
   $graph->SetDataValues($stats);
   $graph->SetDataColors(array('blue','red'),array('blue', 'red'));

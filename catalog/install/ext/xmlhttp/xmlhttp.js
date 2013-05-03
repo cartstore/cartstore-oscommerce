@@ -1,5 +1,5 @@
 /*
-  $Id$
+  $Id: xmlhttp.js 1739 2007-12-20 00:52:16Z hpdl $
 
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com

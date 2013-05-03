@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: language.php,v 1.1 2003/06/20 00:18:30 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 
   browser language detection logic Copyright phpMyAdmin (select_lang.lib.php3 v1.24 04/19/2002)
                                    Copyright Stephane Garin <sgarin@sgarin.com> (detect_language.php v0.1 04/02/2002)

@@ -641,20 +641,20 @@ function ctlSpiffyCalendarBox(strVarName, strFormName, strTextBoxName, strBtnNam
 			strBtnH = '20';
 			break;
 		case 1 :
-			strBtnImg=strDefBtnImgPath+'btn_date1_up.gif';
-			img_DateBtn_UP.src=strDefBtnImgPath+'btn_date1_up.gif';
-			img_DateBtn_OVER.src=strDefBtnImgPath+'btn_date1_over.gif';
-			img_DateBtn_DOWN.src=strDefBtnImgPath+'btn_date1_down.gif';
-			img_DateBtn_DISABLED.src=strDefBtnImgPath+'btn_date1_disabled.gif';
+			strBtnImg=strDefBtnImgPath+'btn_date_up.gif';
+			img_DateBtn_UP.src=strDefBtnImgPath+'btn_date_up.gif';
+			img_DateBtn_OVER.src=strDefBtnImgPath+'btn_date_over.gif';
+			img_DateBtn_DOWN.src=strDefBtnImgPath+'btn_date_down.gif';
+			img_DateBtn_DISABLED.src=strDefBtnImgPath+'btn_date_disabled.gif';
 			strBtnW = '22';
 			strBtnH = '17';
 			break;
 		case 2 :
-			strBtnImg=strDefBtnImgPath+'btn_date2_up.gif';
-			img_DateBtn_UP.src=strDefBtnImgPath+'btn_date2_up.gif';
-			img_DateBtn_OVER.src=strDefBtnImgPath+'btn_date2_over.gif';
-			img_DateBtn_DOWN.src=strDefBtnImgPath+'btn_date2_down.gif';
-			img_DateBtn_DISABLED.src=strDefBtnImgPath+'btn_date2_disabled.gif';
+			strBtnImg=strDefBtnImgPath+'btn_date_up.gif';
+			img_DateBtn_UP.src=strDefBtnImgPath+'btn_date_up.gif';
+			img_DateBtn_OVER.src=strDefBtnImgPath+'btn_date_over.gif';
+			img_DateBtn_DOWN.src=strDefBtnImgPath+'btn_date_down.gif';
+			img_DateBtn_DISABLED.src=strDefBtnImgPath+'btn_date_disabled.gif';
 			strBtnW = '34';
 			strBtnH = '21';
 			break;

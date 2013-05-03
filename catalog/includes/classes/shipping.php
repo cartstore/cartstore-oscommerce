@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: shipping.php,v 1.23 2003/06/29 11:22:05 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class shipping {
@@ -15,10 +15,90 @@
 
 // class constructor
     function shipping($module = '') {
-      global $language, $PHP_SELF;
+      /// start indvship
+      // global $language, $PHP_SELF;
+	  global $language, $PHP_SELF, $cart;
+	  // New to fix attributes bug
+	  $cart_products = $cart->get_products();
+	  if (tep_not_null($cart_products)) {
+			  $real_ids = array();
+			  foreach($cart_products as $prod){
+			  	$real_ids[] = tep_get_prid($prod['id']);
+			  }
+				$sql = "SELECT products_ship_methods_id FROM ".TABLE_PRODUCTS_SHIPPING." WHERE products_id IN (".implode(',',$real_ids).") AND products_ship_methods_id IS NOT NULL AND products_ship_methods_id <> ''";
+				$query = mysql_query($sql);
+			  // End new bug fix
+				$allow_mod_array = array();
+				while($rec = mysql_fetch_array($query)){
+					if(empty($allow_mod_array)) $startedempty = true;
+					$methods_array = array();
+					$methods_array = explode(';',$rec['products_ship_methods_id']);
+					if(!empty($methods_array)){
+						foreach($methods_array as $method){
+							$allow_mod_array[] = $method;
+						}
+					}
+					if($startedempty){
+						$startedempty = false;
+					}else{
+						$temp_array = array();
+						foreach($allow_mod_array as $val){
+							$temp_array[$val]++;
+						}
+						$allow_mod_array = array();
+						foreach($temp_array as $key => $val){
+							if($val > 1){
+								$allow_mod_array[] = $key;
+							}
+						}
+					}
+				}
+		}
+// end indvship
 
       if (defined('MODULE_SHIPPING_INSTALLED') && tep_not_null(MODULE_SHIPPING_INSTALLED)) {
-        $this->modules = explode(';', MODULE_SHIPPING_INSTALLED);
+       // $this->modules = explode(';', MODULE_SHIPPING_INSTALLED);
+
+		   // BOF Separate Pricing Per Customer, next line original code
+		 //   $this->modules = explode(';', MODULE_SHIPPING_INSTALLED);
+		 global $sppc_customer_group_id, $customer_id;
+		 if(!tep_session_is_registered('sppc_customer_group_id')) {
+		 $customer_group_id = '0';
+		 } else {
+		  $customer_group_id = $sppc_customer_group_id;
+		 }
+	   $customer_shipment_query = tep_db_query("select IF(c.customers_shipment_allowed <> '', c.customers_shipment_allowed, cg.group_shipment_allowed) as shipment_allowed from " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_GROUPS . " cg where c.customers_id = '" . $customer_id . "' and cg.customers_group_id =  '" . $customer_group_id . "'");
+	   if ($customer_shipment = tep_db_fetch_array($customer_shipment_query)  ) {
+		   if (tep_not_null($customer_shipment['shipment_allowed']) ) {
+		  $temp_shipment_array = explode(';', $customer_shipment['shipment_allowed']);
+		  $installed_modules = explode(';', MODULE_SHIPPING_INSTALLED);
+		  for ($n = 0; $n < sizeof($installed_modules) ; $n++) {
+			  // check to see if a shipping module is not de-installed
+			  if ( in_array($installed_modules[$n], $temp_shipment_array ) ) {
+				  $shipment_array[] = $installed_modules[$n];
+			  }
+		  } // end for loop
+		  $this->modules = $shipment_array;
+	   } else {
+		   $this->modules = explode(';', MODULE_SHIPPING_INSTALLED);
+	   }
+	   } else { // default
+		   $this->modules = explode(';', MODULE_SHIPPING_INSTALLED);
+	   }
+		 // EOF Separate Pricing Per Customer
+
+// start indvship
+				if (tep_not_null($cart_products)) {
+					$temp_array = $this->modules;
+					$this->modules = array();
+					foreach($temp_array as $val){
+						if(mysql_num_rows($query)==0 || in_array(str_replace('.php','',$val),$allow_mod_array)) {
+							$this->modules[] = $val;
+						}
+					}
+				}
+				// end indvship  
+
 
         $include_modules = array();
 
@@ -85,6 +165,61 @@
 
       return $quotes_array;
     }
+    
+    //start indvship
+	function get_shiptotal() {
+	  global $cart, $order;
+	  $this->shiptotal = '';
+	  $products = $cart->get_products();
+	  for ($i=0, $n=sizeof($products); $i<$n; $i++) {
+	    if (tep_not_null($products[$i]['products_ship_price'])) {
+	      $products_ship_price = $products[$i]['products_ship_price'];
+	      $products_ship_price_two = $products[$i]['products_ship_price_two'];
+	      $products_ship_zip = $products[$i]['products_ship_zip'];
+	      $qty = $products[$i]['quantity'];
+	      if(tep_not_null($products_ship_price) ||tep_not_null($products_ship_price_two)){
+	        $this->shiptotal += ($products_ship_price);
+	        if ($qty > 1) {
+	          if (tep_not_null($products_ship_price_two)) {
+	            $this->shiptotal += ($products_ship_price_two * ($qty-1));
+	          } else {
+	            $this->shiptotal += ($products_ship_price * ($qty-1));
+	          }
+	        }/////////////NOT HERE <<------------
+	      }
+	    }
+	  }// CHECK TO SEE IF SHIPPING TO HOME COUNTRY, IF NOT INCREASE SHIPPING COSTS BY AMOUNT SET IN ADMIN/////////////move back here <<------------
+	  if (($order->delivery['country']['id']) != INDIVIDUAL_SHIP_HOME_COUNTRY) {
+	    if(INDIVIDUAL_SHIP_INCREASE > '0' || $this->shiptotal > '0') {
+	      $this->shiptotal *= INDIVIDUAL_SHIP_INCREASE;
+	    } else {
+		  $this->shiptotal += INDIVIDUAL_SHIP_INCREASE *  $this->get_indvcount();
+	    }
+	    return $this->shiptotal;
+		// not sure why this is needed, but it now works correctly for home country - by Ed
+	  } else {
+	  	 $this->shiptotal *= 1;
+	     return $this->shiptotal;
+	  }
+	}
+
+	function get_indvcount() {
+	  global $cart;
+	  $this->indvcount = '';
+	  $products = $cart->get_products();
+	  for ($i=0, $n=sizeof($products); $i<$n; $i++) {
+	    if (tep_not_null($products[$i]['products_ship_price'])) {
+	      $products_ship_price = $products[$i]['products_ship_price'];//}
+	      $products_ship_price_two = $products[$i]['products_ship_price_two'];
+	      if(is_numeric($products_ship_price)){
+	        $this->indvcount += '1';
+	      }
+	    }
+	  }
+	  return $this->indvcount;
+	}
+
+	// end indvship
 
     function cheapest() {
       if (is_array($this->modules)) {

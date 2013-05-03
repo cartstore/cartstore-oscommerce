@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: currencies.php,v 1.12 2003/06/25 20:36:48 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 define('HEADING_TITLE', 'Currencies');
@@ -18,7 +18,6 @@ define('TABLE_HEADING_CURRENCY_VALUE', 'Value');
 define('TABLE_HEADING_ACTION', 'Action');
 
 define('TEXT_INFO_EDIT_INTRO', 'Please make any necessary changes');
-define('TEXT_INFO_COMMON_CURRENCIES', '-- Common Currencies --');
 define('TEXT_INFO_CURRENCY_TITLE', 'Title:');
 define('TEXT_INFO_CURRENCY_CODE', 'Code:');
 define('TEXT_INFO_CURRENCY_SYMBOL_LEFT', 'Symbol Left:');

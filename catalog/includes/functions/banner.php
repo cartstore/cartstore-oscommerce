@@ -1,11 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: banner.php 1739 2007-12-20 00:52:16Z hpdl $
+  $Mod: Banner Rotator 1.1 20100628 Kymation $
 
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com
 
-  Copyright (c) 2012 osCommerce
+  Copyright (c) 2003 osCommerce
 
   Released under the GNU General Public License
 */
@@ -57,27 +58,32 @@
 ////
 // Display a banner from the specified group or banner id ($identifier)
   function tep_display_banner($action, $identifier) {
+// Banner Rotator
+    global $languages_id;
     if ($action == 'dynamic') {
-      $banners_query = tep_db_query("select count(*) as count from " . TABLE_BANNERS . " where status = '1' and banners_group = '" . tep_db_input($identifier) . "'");
+// Banner Rotator
+      $banners_query = tep_db_query("select count(*) as count from " . TABLE_BANNERS . " where status = '1' and banners_group = '" . $identifier . "' and language_id = '" . ( int )$languages_id . "'");
       $banners = tep_db_fetch_array($banners_query);
       if ($banners['count'] > 0) {
-        $banner = tep_random_select("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_group = '" . tep_db_input($identifier) . "'");
+// Banner Rotator
+        $banner = tep_random_select("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_group = '" . $identifier . "' and language_id = '" . ( int )$languages_id . "'");
       } else {
-        return '<strong>TEP ERROR! (tep_display_banner(' . $action . ', ' . $identifier . ') -> No banners with group \'' . $identifier . '\' found!</strong>';
+        return '<b>TEP ERROR! (tep_display_banner(' . $action . ', ' . $identifier . ') -> No banners with group \'' . $identifier . '\' found!</b>';
       }
     } elseif ($action == 'static') {
       if (is_array($identifier)) {
         $banner = $identifier;
       } else {
-        $banner_query = tep_db_query("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_id = '" . (int)$identifier . "'");
+// Banner Rotator
+        $banner_query = tep_db_query("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_id = '" . (int)$identifier . "' and language_id = '" . ( int )$languages_id . "'");
         if (tep_db_num_rows($banner_query)) {
           $banner = tep_db_fetch_array($banner_query);
         } else {
-          return '<strong>TEP ERROR! (tep_display_banner(' . $action . ', ' . $identifier . ') -> Banner with ID \'' . $identifier . '\' not found, or status inactive</strong>';
+          return '<b>TEP ERROR! (tep_display_banner(' . $action . ', ' . $identifier . ') -> Banner with ID \'' . $identifier . '\' not found, or status inactive</b>';
         }
       }
     } else {
-      return '<strong>TEP ERROR! (tep_display_banner(' . $action . ', ' . $identifier . ') -> Unknown $action parameter value - it must be either \'dynamic\' or \'static\'</strong>';
+      return '<b>TEP ERROR! (tep_display_banner(' . $action . ', ' . $identifier . ') -> Unknown $action parameter value - it must be either \'dynamic\' or \'static\'</b>';
     }
 
     if (tep_not_null($banner['banners_html_text'])) {
@@ -94,10 +100,14 @@
 ////
 // Check to see if a banner exists
   function tep_banner_exists($action, $identifier) {
+// Banner Rotator
+    global $languages_id;
     if ($action == 'dynamic') {
-      return tep_random_select("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_group = '" . tep_db_input($identifier) . "'");
+// Banner Rotator
+      return tep_random_select("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_group = '" . $identifier . "' and language_id = '" . ( int )$languages_id . "'");
     } elseif ($action == 'static') {
-      $banner_query = tep_db_query("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_id = '" . (int)$identifier . "'");
+// Banner Rotator
+      $banner_query = tep_db_query("select banners_id, banners_title, banners_image, banners_html_text from " . TABLE_BANNERS . " where status = '1' and banners_id = '" . (int)$identifier . "' and language_id = '" . ( int )$languages_id . "'");
       return tep_db_fetch_array($banner_query);
     } else {
       return false;

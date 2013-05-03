@@ -1,5 +1,5 @@
 /*
-  $Id$
+  $Id: stylesheet.css 1739 2007-12-20 00:52:16Z hpdl $
 
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com
@@ -18,10 +18,7 @@ body {
   line-height: 1.5;
 }
 
-#pageHeader {
-  background: #f7f7f5;
-  border: 1px #b3b6b0 solid;
-}
+ 
 
 #pageContent {
   margin-top: 15px;
@@ -34,8 +31,9 @@ body {
 }
 
 .mainBlock {
-  background: #dfecf8;
-  padding: 10px 20px 10px 20px;
+	padding: 10px 20px 10px 20px;
+	color: #FFFFFF;
+	background-color: #000000;
 }
 
 .contentBlock {
@@ -45,8 +43,8 @@ body {
 .infoPane {
   float: left;
   width: 250px;
-  background: #e7ffe7;
-  border: 1px #6da96d solid;
+  background: #ffffff;
+  border: 1px #cccccc solid;
 }
 
 .infoPaneContents {
@@ -74,17 +72,21 @@ h3 {
 }
 
 .infoPane h3 {
-  background: #6da96d;
+  background: #F4160E;
   color: #ffffff;
   padding: 5px 10px 5px 10px;
 }
 
 .stepsBox {
-  float: right;
-  background: #f0f6fc;
-  border: 1px #ffffff solid;
-  padding: 10px 15px 10px 0px;
-  margin-right: -5px;
+	float: right;
+	background: #F4160E;
+	border: 1px #ffffff solid;
+	margin-right: -5px;
+	margin-left: 5px;
+	padding-top: 10px;
+	padding-right: 15px;
+	padding-bottom: 10px;
+	padding-left: 0px;
 }
 
 .stepsBox ol {
@@ -117,8 +119,8 @@ h3 {
 #pageHeader A:hover { color: #000000; text-decoration: underline; }
 
 .inputForm {
-  background-color: #e7ebf5;
-  border: 1px #d0d7e8 solid;
+  background-color: #ffffff;
+  border: 1px #cccccc solid;
 }
 
 .inputField {
@@ -127,7 +129,7 @@ h3 {
 }
 
 .inputDescription {
-  background-color: #f5f7fc;
+  background-color: #ffffff;
   width: 60%;
 }
 

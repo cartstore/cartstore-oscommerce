@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: currencies.php,v 1.3 2003/06/20 16:23:08 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2007 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 ////
@@ -52,8 +52,8 @@
       return $this->currencies[$code]['value'];
     }
 
-    function display_price($products_price, $products_tax, $quantity = 1, $currency_type = DEFAULT_CURRENCY) {
-      return $this->format(tep_round(tep_add_tax($products_price, $products_tax), $this->currencies[$currency_type]['decimal_places']) * $quantity);
+    function display_price($products_price, $products_tax, $quantity = 1) {
+      return $this->format(tep_add_tax($products_price, $products_tax) * $quantity);
     }
   }
 ?>

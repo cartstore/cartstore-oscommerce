@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: advanced_search.php,v 1.15 2003/07/08 16:45:35 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 define('NAVBAR_TITLE_1', 'Advanced Search');
@@ -33,7 +33,7 @@ define('TEXT_ALL_CATEGORIES', 'All Categories');
 define('TEXT_ALL_MANUFACTURERS', 'All Manufacturers');
 
 define('HEADING_SEARCH_HELP', 'Search Help');
-define('TEXT_SEARCH_HELP', 'Keywords may be separated by AND and/or OR statements for greater control of the search results.<br /><br />For example, <u>Microsoft AND mouse</u> would generate a result set that contain both words. However, for <u>mouse OR keyboard</u>, the result set returned would contain both or either words.<br /><br />Exact matches can be searched for by enclosing keywords in double-quotes.<br /><br />For example, <u>"notebook computer"</u> would generate a result set which match the exact string.<br /><br />Brackets can be used for further control on the result set.<br /><br />For example, <u>Microsoft and (keyboard or mouse or "visual basic")</u>.');
+define('TEXT_SEARCH_HELP', 'Keywords may be separated by AND and/or OR statements for greater control of the search results.<br><br>For example, <u>Microsoft AND mouse</u> would generate a result set that contain both words. However, for <u>mouse OR keyboard</u>, the result set returned would contain both or either words.<br><br>Exact matches can be searched for by enclosing keywords in double-quotes.<br><br>For example, <u>"notebook computer"</u> would generate a result set which match the exact string.<br><br>Brackets can be used for further control on the result set.<br><br>For example, <u>Microsoft and (keyboard or mouse or "visual basic")</u>.');
 define('TEXT_CLOSE_WINDOW', '<u>Close Window</u> [x]');
 
 define('TABLE_HEADING_IMAGE', '');
@@ -55,4 +55,9 @@ define('ERROR_PRICE_FROM_MUST_BE_NUM', 'Price From must be a number.');
 define('ERROR_PRICE_TO_MUST_BE_NUM', 'Price To must be a number.');
 define('ERROR_PRICE_TO_LESS_THAN_PRICE_FROM', 'Price To must be greater than or equal to Price From.');
 define('ERROR_INVALID_KEYWORDS', 'Invalid keywords.');
+
+// quicksearch
+define('QUICKSEARCH_FIND_RESULTS', 'Quick Find Results ...');
+define('QUICKSEARCH_NO_RESULTS', 'No Quick Find Results');
+
 ?>

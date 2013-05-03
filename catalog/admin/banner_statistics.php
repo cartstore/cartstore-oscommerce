@@ -1,18 +1,18 @@
 <?php
 /*
-  $Id$
+  $Id: banner_statistics.php,v 1.5 2003/06/20 00:30:15 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   require('includes/application_top.php');
 
-  $type = (isset($HTTP_GET_VARS['type']) ? $HTTP_GET_VARS['type'] : '');
+  $type = (isset($_GET['type']) ? $_GET['type'] : '');
 
   $banner_extension = tep_banner_image_extension();
 
@@ -20,7 +20,7 @@
   $dir_ok = false;
   if (function_exists('imagecreate') && tep_not_null($banner_extension)) {
     if (is_dir(DIR_WS_IMAGES . 'graphs')) {
-      if (tep_is_writable(DIR_WS_IMAGES . 'graphs')) {
+      if (is_writeable(DIR_WS_IMAGES . 'graphs')) {
         $dir_ok = true;
       } else {
         $messageStack->add(ERROR_GRAPHS_DIRECTORY_NOT_WRITEABLE, 'error');
@@ -30,11 +30,11 @@
     }
   }
 
-  $banner_query = tep_db_query("select banners_title from " . TABLE_BANNERS . " where banners_id = '" . (int)$HTTP_GET_VARS['bID'] . "'");
+  $banner_query = tep_db_query("select banners_title from " . TABLE_BANNERS . " where banners_id = '" . (int)$_GET['bID'] . "'");
   $banner = tep_db_fetch_array($banner_query);
 
   $years_array = array();
-  $years_query = tep_db_query("select distinct year(banners_history_date) as banner_year from " . TABLE_BANNERS_HISTORY . " where banners_id = '" . (int)$HTTP_GET_VARS['bID'] . "'");
+  $years_query = tep_db_query("select distinct year(banners_history_date) as banner_year from " . TABLE_BANNERS_HISTORY . " where banners_id = '" . (int)$_GET['bID'] . "'");
   while ($years = tep_db_fetch_array($years_query)) {
     $years_array[] = array('id' => $years['banner_year'],
                            'text' => $years['banner_year']);
@@ -52,41 +52,62 @@
                             'text' => STATISTICS_TYPE_MONTHLY),
                       array('id' => 'yearly',
                             'text' => STATISTICS_TYPE_YEARLY));
-
-  require(DIR_WS_INCLUDES . 'template_top.php');
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><?php echo TITLE; ?></title>
+<link href="templates/admin/css/template_css.css" rel="stylesheet" type="text/css" />
+   
+	 	
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0" bgcolor="#FFFFFF">
+<!-- header //-->
+<?php require(DIR_WS_INCLUDES . 'header.php'); ?>
+<!-- header_eof //-->
 
-    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+<!-- body //-->
+<table border="0" width="100%" cellspacing="2" cellpadding="2">
+  <tr>
+    <td width="<?php echo BOX_WIDTH; ?>" valign="top"><table border="0" width="<?php echo BOX_WIDTH; ?>" cellspacing="1" cellpadding="1" class="columnLeft">
+<!-- left_navigation //-->
+<?php require(DIR_WS_INCLUDES . 'column_left.php'); ?>
+<!-- left_navigation_eof //-->
+    </table></td>
+<!-- body_text //-->
+    <td width="100%" valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
       <tr>
         <td width="100%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
           <tr><?php echo tep_draw_form('year', FILENAME_BANNER_STATISTICS, '', 'get'); ?>
-            <td class="pageHeading"><?php echo HEADING_TITLE; ?></td>
-            <td class="pageHeading" align="right"><?php echo tep_draw_separator('pixel_trans.gif', '1', HEADING_IMAGE_HEIGHT); ?></td>
-            <td class="main" align="right"><?php echo TITLE_TYPE . ' ' . tep_draw_pull_down_menu('type', $type_array, (tep_not_null($type) ? $type : 'daily'), 'onchange="this.form.submit();"'); ?><noscript><input type="submit" value="GO"></noscript><br />
+            <td class="pageHeading"><h3><?php echo HEADING_TITLE; ?></h3></td>
+            <td class="pageHeading" align="right"><?php echo tep_draw_separator('pixel_trans.png', '1', HEADING_IMAGE_HEIGHT); ?></td>
+            <td class="main" align="right"><?php echo TITLE_TYPE . ' ' . tep_draw_pull_down_menu('type', $type_array, (tep_not_null($type) ? $type : 'daily'), 'onChange="this.form.submit();"'); ?><noscript><input type="submit" class="button" value="GO"></noscript><br>
 <?php
   switch ($type) {
     case 'yearly': break;
     case 'monthly':
-      echo TITLE_YEAR . ' ' . tep_draw_pull_down_menu('year', $years_array, (isset($HTTP_GET_VARS['year']) ? $HTTP_GET_VARS['year'] : date('Y')), 'onchange="this.form.submit();"') . '<noscript><input type="submit" value="GO"></noscript>';
+      echo TITLE_YEAR . ' ' . tep_draw_pull_down_menu('year', $years_array, (isset($_GET['year']) ? $_GET['year'] : date('Y')), 'onChange="this.form.submit();"') . '<noscript><input type="submit" class="button" value="GO"></noscript>';
       break;
     default:
     case 'daily':
-      echo TITLE_MONTH . ' ' . tep_draw_pull_down_menu('month', $months_array, (isset($HTTP_GET_VARS['month']) ? $HTTP_GET_VARS['month'] : date('n')), 'onchange="this.form.submit();"') . '<noscript><input type="submit" value="GO"></noscript><br />' . TITLE_YEAR . ' ' . tep_draw_pull_down_menu('year', $years_array, (isset($HTTP_GET_VARS['year']) ? $HTTP_GET_VARS['year'] : date('Y')), 'onchange="this.form.submit();"') . '<noscript><input type="submit" value="GO"></noscript>';
+      echo TITLE_MONTH . ' ' . tep_draw_pull_down_menu('month', $months_array, (isset($_GET['month']) ? $_GET['month'] : date('n')), 'onChange="this.form.submit();"') . '<noscript><input type="submit" class="button" value="GO"></noscript><br>' . TITLE_YEAR . ' ' . tep_draw_pull_down_menu('year', $years_array, (isset($_GET['year']) ? $_GET['year'] : date('Y')), 'onChange="this.form.submit();"') . '<noscript><input type="submit" class="button" value="GO"></noscript>';
       break;
   }
 ?>
             </td>
-          <?php echo tep_draw_hidden_field('page', $HTTP_GET_VARS['page']) . tep_draw_hidden_field('bID', $HTTP_GET_VARS['bID']) . tep_hide_session_id(); ?></form></tr>
+          <?php echo tep_draw_hidden_field('page', $_GET['page']) . tep_draw_hidden_field('bID', $_GET['bID']); ?></form></tr>
         </table></td>
       </tr>
       <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+        <td><?php echo tep_draw_separator('pixel_trans.png', '1', '10'); ?></td>
       </tr>
       <tr>
         <td align="center">
 <?php
   if (function_exists('imagecreate') && ($dir_ok == true) && tep_not_null($banner_extension)) {
-    $banner_id = (int)$HTTP_GET_VARS['bID'];
+    $banner_id = (int)$_GET['bID'];
 
     switch ($type) {
       case 'yearly':
@@ -126,14 +147,14 @@
 
     switch ($type) {
       case 'yearly':
-        echo tep_banner_graph_yearly($HTTP_GET_VARS['bID']);
+        echo tep_banner_graph_yearly($_GET['bID']);
         break;
       case 'monthly':
-        echo tep_banner_graph_monthly($HTTP_GET_VARS['bID']);
+        echo tep_banner_graph_monthly($_GET['bID']);
         break;
       default:
       case 'daily':
-        echo tep_banner_graph_daily($HTTP_GET_VARS['bID']);
+        echo tep_banner_graph_daily($_GET['bID']);
         break;
     }
   }
@@ -141,14 +162,21 @@
         </td>
       </tr>
       <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+        <td><?php echo tep_draw_separator('pixel_trans.png', '1', '10'); ?></td>
       </tr>
       <tr>
-        <td class="smallText" align="right"><?php echo tep_draw_button(IMAGE_BACK, 'arrow-1-w', tep_href_link(FILENAME_BANNER_MANAGER, 'page=' . $HTTP_GET_VARS['page'] . '&bID=' . $HTTP_GET_VARS['bID'])); ?></td>
+        <td class="main" align="right"><?php echo '<a href="' . tep_href_link(FILENAME_BANNER_MANAGER, 'page=' . $_GET['page'] . '&bID=' . $_GET['bID']) . '">' . tep_image_button('button_back.png', IMAGE_BACK) . '</a>'; ?></td>
       </tr>
-    </table>
+    </table></td>
+<!-- body_text_eof //-->
+  </tr>
+</table>
+<!-- body_eof //-->
 
-<?php
-  require(DIR_WS_INCLUDES . 'template_bottom.php');
-  require(DIR_WS_INCLUDES . 'application_bottom.php');
-?>
+<!-- footer //-->
+<?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
+<!-- footer_eof //-->
+<br>
+</body>
+</html>
+<?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>

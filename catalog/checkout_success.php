@@ -1,44 +1,62 @@
 <?php
 /*
-  $Id$
+  $Id: checkout_success.php,v 1.49 2003/06/09 23:03:53 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   require('includes/application_top.php');
 
-// if the customer is not logged on, redirect them to the shopping cart page
-  if (!tep_session_is_registered('customer_id')) {
-    tep_redirect(tep_href_link(FILENAME_SHOPPING_CART));
+/* One Page Checkout - BEGIN */
+  if (ONEPAGE_CHECKOUT_ENABLED == 'True' && SELECT_VENDOR_SHIPPING != 'true'){
+      if (!tep_session_is_registered('onepage')){
+          if (!tep_session_is_registered('customer_id')) {
+              tep_redirect(tep_href_link(FILENAME_SHOPPING_CART));
+          }
+      }else{
+          require(DIR_WS_LANGUAGES . $language . '/' . FILENAME_CHECKOUT);
+          require_once('includes/functions/password_funcs.php');
+          require(DIR_WS_MODULES . 'checkout/includes/classes/onepage_checkout.php');
+          $onePageCheckout = new osC_onePageCheckout();
+          $onePageCheckout->createCustomerAccount();
+      }
+  }else{
+      if (!tep_session_is_registered('customer_id')) {
+          tep_redirect(tep_href_link(FILENAME_SHOPPING_CART));
+      }
   }
+/* One Page Checkout - END */
 
-  if (isset($HTTP_GET_VARS['action']) && ($HTTP_GET_VARS['action'] == 'update')) {
-    $notify_string = '';
-
-    if (isset($HTTP_POST_VARS['notify']) && !empty($HTTP_POST_VARS['notify'])) {
-      $notify = $HTTP_POST_VARS['notify'];
-
-      if (!is_array($notify)) {
-        $notify = array($notify);
-      }
-
-      for ($i=0, $n=sizeof($notify); $i<$n; $i++) {
-        if (is_numeric($notify[$i])) {
-          $notify_string .= 'notify[]=' . $notify[$i] . '&';
-        }
-      }
-
-      if (!empty($notify_string)) {
-        $notify_string = 'action=notify&' . substr($notify_string, 0, -1);
-      }
+  if (isset($_GET['action']) && ($_GET['action'] == 'update')) {
+    $notify_string = 'action=notify&';
+    $notify = $_POST['notify'];
+    if (!is_array($notify)) $notify = array($notify);
+    for ($i=0, $n=sizeof($notify); $i<$n; $i++) {
+      $notify_string .= 'notify[]=' . $notify[$i] . '&';
     }
+    if (strlen($notify_string) > 0) $notify_string = substr($notify_string, 0, -1);
 
-    tep_redirect(tep_href_link(FILENAME_DEFAULT, $notify_string));
+   // tep_redirect(tep_href_link(FILENAME_DEFAULT, $notify_string));
+
+   // PWA BOF
+       if($customer_id != 0)
+       {
+         tep_redirect(tep_href_link(FILENAME_DEFAULT, $notify_string));
+       }
+       else
+       {
+         tep_session_unregister('pwa_array_customer');
+         tep_session_unregister('pwa_array_address');
+         tep_session_unregister('pwa_array_shipping');
+         tep_session_unregister('customer_id');
+         tep_redirect(tep_href_link(FILENAME_DEFAULT));
+       }
+      // PWA EOF
   }
 
   require(DIR_WS_LANGUAGES . $language . '/' . FILENAME_CHECKOUT_SUCCESS);
@@ -61,58 +79,106 @@
     }
   }
 
-  require(DIR_WS_INCLUDES . 'template_top.php');
-?>
+require(DIR_WS_INCLUDES . 'header.php');
+require(DIR_WS_INCLUDES . 'column_left.php'); ?>
 
-<h1><?php echo HEADING_TITLE; ?></h1>
+<!-- body_text //-->
+    <td width="100%" valign="top"><?php echo tep_draw_form('order', tep_href_link(FILENAME_CHECKOUT_SUCCESS, 'action=update', 'SSL')); ?><table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td><table border="0" width="100%" cellspacing="4" cellpadding="2">
+          <tr>
+            <td valign="top" class="main"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?>
+              <div class="pageHeading"><?php echo HEADING_TITLE; ?></div> <br><?php echo TEXT_SUCCESS; ?><br><br>
+              <!--<div align="center"><a href="javascript:popupPrintReceipt('<?php echo tep_href_link(FILENAME_ORDERS_PRINTABLE2, 'oID=' . $last_order); ?>')">
+           <b>Print Reciept</b></a></div>
 
-<?php echo tep_draw_form('order', tep_href_link(FILENAME_CHECKOUT_SUCCESS, 'action=update', 'SSL')); ?>
+           -->Your Order # is <?php echo "$last_order" ; ?>. <br>
+A invoice has been emailed to you. <br>
 
-<div class="contentContainer">
-  <div class="contentText">
-    <?php echo TEXT_SUCCESS; ?>
-  </div>
+  <!-- <iframe class="autoHeight" width="100%" scrolling="no" height="288" frameborder="0" name="iframe" src="print_order2.php?oID=<?php echo $last_order;?>"></iframe> -->
 
-  <div class="contentText">
 
+
+
+
+
+
+
+            </td>
+          </tr>
+        </table></td>
+      </tr>
 <?php
-  if ($global['global_product_notifications'] != '1') {
-    echo TEXT_NOTIFY_PRODUCTS . '<br /><p class="productsNotifications">';
-
-    $products_displayed = array();
-    for ($i=0, $n=sizeof($products_array); $i<$n; $i++) {
-      if (!in_array($products_array[$i]['id'], $products_displayed)) {
-        echo tep_draw_checkbox_field('notify[]', $products_array[$i]['id']) . ' ' . $products_array[$i]['text'] . '<br />';
-        $products_displayed[] = $products_array[$i]['id'];
-      }
+// Start - CREDIT CLASS Gift Voucher Contribution
+  require('add_checkout_success.php');
+// End - CREDIT CLASS Gift Voucher Contribution
+ ?>
+      <tr>
+        <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
+      </tr>
+      <tr>
+        <td align="right" class="main"><?php echo tep_image_submit('button_continue.gif', IMAGE_BUTTON_CONTINUE); ?></td>
+      </tr>
+      <tr>
+        <td></td>
+      </tr>
+      <tr>
+        <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="25%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="50%" align="right"></td>
+                <td width="50%"></td>
+              </tr>
+            </table></td>
+            <td width="25%"></td>
+            <td width="25%"></td>
+            <td width="25%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="50%"></td>
+                <td width="50%"></td>
+              </tr>
+            </table></td>
+          </tr>
+       <!--   <tr>
+            <td align="center" width="25%" class="checkoutBarFrom"><?php echo CHECKOUT_BAR_DELIVERY; ?></td>
+            <td align="center" width="25%" class="checkoutBarFrom"><?php echo CHECKOUT_BAR_PAYMENT; ?></td>
+            <td align="center" width="25%" class="checkoutBarFrom"><?php echo CHECKOUT_BAR_CONFIRMATION; ?></td>
+            <td align="center" width="25%" class="checkoutBarCurrent"><?php echo tep_image(DIR_WS_IMAGES . 'checkout_bullet.gif'); ?><?php echo CHECKOUT_BAR_FINISHED; ?></td>
+          </tr> -->
+        </table></td>
+      </tr>
+<?php if (DOWNLOAD_ENABLED == 'true') include(DIR_WS_MODULES . 'downloads.php'); ?>
+<?php //---PayPal WPP Modification START ---// ?>
+<?php
+  $customer_id_temp = $customer_id;
+  if (tep_paypal_wpp_enabled()) {
+    if ($paypal_ec_temp) {
+        tep_session_unregister('customer_id');
+        tep_session_unregister('customer_default_address_id');
+        tep_session_unregister('customer_first_name');
+        tep_session_unregister('customer_country_id');
+        tep_session_unregister('customer_zone_id');
+        tep_session_unregister('comments');
+        //$cart->reset();
+        tep_db_query("delete from " . TABLE_ADDRESS_BOOK . " where customers_id = '" . (int)$customer_id . "'");
+        tep_db_query("delete from " . TABLE_CUSTOMERS . " where customers_id = '" . (int)$customer_id . "'");
+        tep_db_query("delete from " . TABLE_CUSTOMERS_INFO . " where customers_info_id = '" . (int)$customer_id . "'");
+        tep_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id = '" . (int)$customer_id . "'");
+        tep_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id = '" . (int)$customer_id . "'");
+        tep_db_query("delete from " . TABLE_WHOS_ONLINE . " where customer_id = '" . (int)$customer_id . "'");
     }
 
-    echo '</p>';
-  }
-
-  echo TEXT_SEE_ORDERS . '<br /><br />' . TEXT_CONTACT_STORE_OWNER;
-?>
-
-  </div>
-
-  <div class="contentText">
-    <h3><?php echo TEXT_THANKS_FOR_SHOPPING; ?></h3>
-  </div>
-
-<?php
-  if (DOWNLOAD_ENABLED == 'true') {
-    include(DIR_WS_MODULES . 'downloads.php');
+    tep_session_unregister('paypal_ec_temp');
+    tep_session_unregister('paypal_ec_token');
+    tep_session_unregister('paypal_ec_payer_id');
+    tep_session_unregister('paypal_ec_payer_info');
   }
 ?>
-
-  <div class="buttonSet">
-    <span class="buttonAction"><?php echo tep_draw_button(IMAGE_BUTTON_CONTINUE, 'triangle-1-e', null, 'primary'); ?></span>
-  </div>
-</div>
-
-</form>
-
-<?php
-  require(DIR_WS_INCLUDES . 'template_bottom.php');
-  require(DIR_WS_INCLUDES . 'application_bottom.php');
-?>
+<?php //---PayPal WPP Modification END ---// ?>
+    </table></form></td>
+<!-- body_text_eof //-->
+ 
+<?php require(DIR_WS_INCLUDES . 'column_right.php'); 
+ require(DIR_WS_INCLUDES . 'footer.php');
+ require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>

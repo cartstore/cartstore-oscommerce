@@ -1,16 +1,18 @@
 <?php
 /*
-  $Id$
+  $Id: account_edit.php,v 1.65 2003/06/09 23:03:52 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   require('includes/application_top.php');
+
+
 
   if (!tep_session_is_registered('customer_id')) {
     $navigation->set_snapshot();
@@ -20,14 +22,14 @@
 // needs to be included earlier to set the success message in the messageStack
   require(DIR_WS_LANGUAGES . $language . '/' . FILENAME_ACCOUNT_EDIT);
 
-  if (isset($HTTP_POST_VARS['action']) && ($HTTP_POST_VARS['action'] == 'process') && isset($HTTP_POST_VARS['formid']) && ($HTTP_POST_VARS['formid'] == $sessiontoken)) {
-    if (ACCOUNT_GENDER == 'true') $gender = tep_db_prepare_input($HTTP_POST_VARS['gender']);
-    $firstname = tep_db_prepare_input($HTTP_POST_VARS['firstname']);
-    $lastname = tep_db_prepare_input($HTTP_POST_VARS['lastname']);
-    if (ACCOUNT_DOB == 'true') $dob = tep_db_prepare_input($HTTP_POST_VARS['dob']);
-    $email_address = tep_db_prepare_input($HTTP_POST_VARS['email_address']);
-    $telephone = tep_db_prepare_input($HTTP_POST_VARS['telephone']);
-    $fax = tep_db_prepare_input($HTTP_POST_VARS['fax']);
+  if (isset($_POST['action']) && ($_POST['action'] == 'process')) {
+    if (ACCOUNT_GENDER == 'true') $gender = tep_db_prepare_input($_POST['gender']);
+    $firstname = tep_db_prepare_input($_POST['firstname']);
+    $lastname = tep_db_prepare_input($_POST['lastname']);
+    if (ACCOUNT_DOB == 'true') $dob = tep_db_prepare_input($_POST['dob']);
+    $email_address = tep_db_prepare_input($_POST['email_address']);
+    $telephone = tep_db_prepare_input($_POST['telephone']);
+    $fax = tep_db_prepare_input($_POST['fax']);
 
     $error = false;
 
@@ -52,7 +54,7 @@
     }
 
     if (ACCOUNT_DOB == 'true') {
-      if ((is_numeric(tep_date_raw($dob)) == false) || (@checkdate(substr(tep_date_raw($dob), 4, 2), substr(tep_date_raw($dob), 6, 2), substr(tep_date_raw($dob), 0, 4)) == false)) {
+      if (!checkdate(substr(tep_date_raw($dob), 4, 2), substr(tep_date_raw($dob), 6, 2), substr(tep_date_raw($dob), 0, 4))) {
         $error = true;
 
         $messageStack->add('account_edit', ENTRY_DATE_OF_BIRTH_ERROR);
@@ -84,7 +86,6 @@
 
       $messageStack->add('account_edit', ENTRY_TELEPHONE_NUMBER_ERROR);
     }
-
     if ($error == false) {
       $sql_data_array = array('customers_firstname' => $firstname,
                               'customers_lastname' => $lastname,
@@ -119,29 +120,42 @@
   $breadcrumb->add(NAVBAR_TITLE_1, tep_href_link(FILENAME_ACCOUNT, '', 'SSL'));
   $breadcrumb->add(NAVBAR_TITLE_2, tep_href_link(FILENAME_ACCOUNT_EDIT, '', 'SSL'));
 
-  require(DIR_WS_INCLUDES . 'template_top.php');
-  require('includes/form_check.js.php');
-?>
+require('includes/form_check.js.php'); 
+ require(DIR_WS_INCLUDES . 'header.php'); 
+ require(DIR_WS_INCLUDES . 'column_left.php'); ?>
 
-<h1><?php echo HEADING_TITLE; ?></h1>
 
+<!-- body_text //-->
+<table width="100%" valign="top">
+	<tr>
+    <td>
+    	
+    	
+
+    	
+    	<?php echo tep_draw_form('account_edit', tep_href_link(FILENAME_ACCOUNT_EDIT, '', 'SSL'), 'post', 'onSubmit="return check_form(account_edit);"') . tep_draw_hidden_field('action', 'process'); ?>
+    	
+    	
+  <h1><?php echo HEADING_TITLE; ?></h1>
+           
+
+		
+	
 <?php
   if ($messageStack->size('account_edit') > 0) {
-    echo $messageStack->output('account_edit');
-  }
 ?>
 
-<?php echo tep_draw_form('account_edit', tep_href_link(FILENAME_ACCOUNT_EDIT, '', 'SSL'), 'post', 'onsubmit="return check_form(account_edit);"', true) . tep_draw_hidden_field('action', 'process'); ?>
+<p><?php echo $messageStack->output('account_edit'); ?></p>
+       
+<?php
+  }
+?>
+      
+<b><?php echo MY_ACCOUNT_TITLE; ?></b>
 
-<div class="contentContainer">
-  <div>
-    <div class="inputRequirement" style="float: right;"><?php echo FORM_REQUIRED_INFORMATION; ?></div>
 
-    <h2><?php echo MY_ACCOUNT_TITLE; ?></h2>
-  </div>
-
-  <div class="contentText">
-    <table border="0" cellspacing="2" cellpadding="2" width="100%">
+                <span class="inputRequirement" style="float:right;"><?php echo FORM_REQUIRED_INFORMATION; ?></span>
+             <div class="clear"></div>
 
 <?php
   if (ACCOUNT_GENDER == 'true') {
@@ -152,65 +166,71 @@
     }
     $female = !$male;
 ?>
-
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_GENDER; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_radio_field('gender', 'm', $male) . '&nbsp;&nbsp;' . MALE . '&nbsp;&nbsp;' . tep_draw_radio_field('gender', 'f', $female) . '&nbsp;&nbsp;' . FEMALE . '&nbsp;' . (tep_not_null(ENTRY_GENDER_TEXT) ? '<span class="inputRequirement">' . ENTRY_GENDER_TEXT . '</span>': ''); ?></td>
-      </tr>
-
+                  <label><?php echo ENTRY_GENDER; ?></label>
+                  
+<?php echo tep_draw_radio_field('gender', 'm', $male) . '&nbsp;&nbsp;' . MALE . '&nbsp;&nbsp;' . tep_draw_radio_field('gender', 'f', $female) . '&nbsp;&nbsp;' . FEMALE . '&nbsp;' . (tep_not_null(ENTRY_GENDER_TEXT) ? '<span class="inputRequirement">' . ENTRY_GENDER_TEXT . '</span>': ''); ?>
+                
+<div class="clear"></div>
 <?php
   }
 ?>
+                  <label></label><?php echo ENTRY_FIRST_NAME; ?></label>
+                  <?php echo tep_draw_input_field('firstname', $account['customers_firstname']) . '&nbsp;' . (tep_not_null(ENTRY_FIRST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_FIRST_NAME_TEXT . '</span>': ''); ?>
+                 <div class="clear"></div>
 
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_FIRST_NAME; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('firstname', $account['customers_firstname']) . '&nbsp;' . (tep_not_null(ENTRY_FIRST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_FIRST_NAME_TEXT . '</span>': ''); ?></td>
-      </tr>
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_LAST_NAME; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('lastname', $account['customers_lastname']) . '&nbsp;' . (tep_not_null(ENTRY_LAST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_LAST_NAME_TEXT . '</span>': ''); ?></td>
-      </tr>
-
+                    <label><?php echo ENTRY_LAST_NAME; ?></label>
+                
+<?php echo tep_draw_input_field('lastname', $account['customers_lastname']) . '&nbsp;' . (tep_not_null(ENTRY_LAST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_LAST_NAME_TEXT . '</span>': ''); ?>
+                <div class="clear"></div>
+                
+               
 <?php
   if (ACCOUNT_DOB == 'true') {
 ?>
-
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_DATE_OF_BIRTH; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('dob', tep_date_short($account['customers_dob']), 'id="dob"') . '&nbsp;' . (tep_not_null(ENTRY_DATE_OF_BIRTH_TEXT) ? '<span class="inputRequirement">' . ENTRY_DATE_OF_BIRTH_TEXT . '</span>': ''); ?><script type="text/javascript">$('#dob').datepicker({dateFormat: '<?php echo JQUERY_DATEPICKER_FORMAT; ?>', changeMonth: true, changeYear: true, yearRange: '-100:+0'});</script></td>
-      </tr>
-
+                  <label><?php echo ENTRY_DATE_OF_BIRTH; ?></label>
+                   <?php echo tep_draw_input_field('dob', tep_date_short($account['customers_dob'])) . '&nbsp;' . (tep_not_null(ENTRY_DATE_OF_BIRTH_TEXT) ? '<span class="inputRequirement">' . ENTRY_DATE_OF_BIRTH_TEXT . '</span>': ''); ?>
+                
+<div class="clear"></div>
 <?php
   }
 ?>
+                  <label><?php echo ENTRY_EMAIL_ADDRESS; ?></label>
+               <?php echo tep_draw_input_field('email_address', $account['customers_email_address']) . '&nbsp;' . (tep_not_null(ENTRY_EMAIL_ADDRESS_TEXT) ? '<span class="inputRequirement">' . ENTRY_EMAIL_ADDRESS_TEXT . '</span>': ''); ?>
+               <div class="clear"></div>
 
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_EMAIL_ADDRESS; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('email_address', $account['customers_email_address']) . '&nbsp;' . (tep_not_null(ENTRY_EMAIL_ADDRESS_TEXT) ? '<span class="inputRequirement">' . ENTRY_EMAIL_ADDRESS_TEXT . '</span>': ''); ?></td>
-      </tr>
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_TELEPHONE_NUMBER; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('telephone', $account['customers_telephone']) . '&nbsp;' . (tep_not_null(ENTRY_TELEPHONE_NUMBER_TEXT) ? '<span class="inputRequirement">' . ENTRY_TELEPHONE_NUMBER_TEXT . '</span>': ''); ?></td>
-      </tr>
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_FAX_NUMBER; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('fax', $account['customers_fax']) . '&nbsp;' . (tep_not_null(ENTRY_FAX_NUMBER_TEXT) ? '<span class="inputRequirement">' . ENTRY_FAX_NUMBER_TEXT . '</span>': ''); ?></td>
-      </tr>
-    </table>
+                    <label><?php echo ENTRY_TELEPHONE_NUMBER; ?></label>
+                    
+<?php echo tep_draw_input_field('telephone', $account['customers_telephone']) . '&nbsp;' . (tep_not_null(ENTRY_TELEPHONE_NUMBER_TEXT) ? '<span class="inputRequirement">' . ENTRY_TELEPHONE_NUMBER_TEXT . '</span>': ''); ?>
+             <div class="clear"></div>
 
-    <br />
+                    <label><?php echo ENTRY_FAX_NUMBER; ?></label>
+                   
+<?php echo tep_draw_input_field('fax', $account['customers_fax']) . '&nbsp;' . (tep_not_null(ENTRY_FAX_NUMBER_TEXT) ? '<span class="inputRequirement">' . ENTRY_FAX_NUMBER_TEXT . '</span>': ''); ?>
+               <div class="clear"></div>
 
-    <div class="buttonSet">
-      <span class="buttonAction"><?php echo tep_draw_button(IMAGE_BUTTON_CONTINUE, 'triangle-1-e', null, 'primary'); ?></span>
+                
 
-      <?php echo tep_draw_button(IMAGE_BUTTON_BACK, 'triangle-1-w', tep_href_link(FILENAME_ACCOUNT, '', 'SSL')); ?>
-    </div>
-  </div>
-</div>
+     
 
-</form>
-
-<?php
-  require(DIR_WS_INCLUDES . 'template_bottom.php');
-  require(DIR_WS_INCLUDES . 'application_bottom.php');
-?>
+   <table>
+          
+              <tr>
+                 <td><?php echo '<a class="button" href="' . tep_href_link(FILENAME_ACCOUNT, '', 'SSL') . '">' . IMAGE_BUTTON_BACK. '</a>'; ?></td>
+                <td align="right"><?php echo tep_image_submit('button_continue.gif', IMAGE_BUTTON_CONTINUE); ?></td>
+               </tr>
+              
+              
+              </table>
+           
+ </form>
+ 
+ </td>
+ </tr>
+        </table>
+        
+        
+<!-- body_text_eof //-->
+  
+<?php require(DIR_WS_INCLUDES . 'column_right.php'); 
+require(DIR_WS_INCLUDES . 'footer.php'); 
+require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>

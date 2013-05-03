@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: table.php,v 1.27 2003/02/05 22:41:52 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2008 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class table {
@@ -46,10 +46,10 @@
 
 // class methods
     function quote($method = '') {
-      global $order, $shipping_weight, $shipping_num_boxes;
+      global $order, $cart, $shipping_weight, $shipping_num_boxes;
 
       if (MODULE_SHIPPING_TABLE_MODE == 'price') {
-        $order_total = $this->getShippableTotal();
+        $order_total = $cart->show_total();
       } else {
         $order_total = $shipping_weight;
       }
@@ -106,34 +106,6 @@
 
     function keys() {
       return array('MODULE_SHIPPING_TABLE_STATUS', 'MODULE_SHIPPING_TABLE_COST', 'MODULE_SHIPPING_TABLE_MODE', 'MODULE_SHIPPING_TABLE_HANDLING', 'MODULE_SHIPPING_TABLE_TAX_CLASS', 'MODULE_SHIPPING_TABLE_ZONE', 'MODULE_SHIPPING_TABLE_SORT_ORDER');
-    }
-
-    function getShippableTotal() {
-      global $order, $cart, $currencies;
-
-      $order_total = $cart->show_total();
-
-      if ($order->content_type == 'mixed') {
-        $order_total = 0;
-
-        for ($i=0, $n=sizeof($order->products); $i<$n; $i++) {
-          $order_total += $currencies->calculate_price($order->products[$i]['final_price'], $order->products[$i]['tax'], $order->products[$i]['qty']);
-
-          if (isset($order->products[$i]['attributes'])) {
-            reset($order->products[$i]['attributes']);
-            while (list($option, $value) = each($order->products[$i]['attributes'])) {
-              $virtual_check_query = tep_db_query("select count(*) as total from " . TABLE_PRODUCTS_ATTRIBUTES . " pa, " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad where pa.products_id = '" . (int)$order->products[$i]['id'] . "' and pa.options_values_id = '" . (int)$value['value_id'] . "' and pa.products_attributes_id = pad.products_attributes_id");
-              $virtual_check = tep_db_fetch_array($virtual_check_query);
-
-              if ($virtual_check['total'] > 0) {
-                $order_total -= $currencies->calculate_price($order->products[$i]['final_price'], $order->products[$i]['tax'], $order->products[$i]['qty']);
-              }
-            }
-          }
-        }
-      }
-
-      return $order_total;
     }
   }
 ?>

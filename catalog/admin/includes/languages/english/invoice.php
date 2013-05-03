@@ -1,14 +1,20 @@
 <?php
 /*
-  $Id$
+  $Id: invoice.php,v 1.1 2002/06/11 18:17:59 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
+//MVS Start
+define('TABLE_HEADING_PRODUCTS_VENDOR', 'Shipment');
+define('TABLE_HEADING_QUANTITY', 'Qty');
+define('TABLE_HEADING_VENDORS_SHIP', 'Shipper');
+define('TABLE_HEADING_SHIPPING_METHOD', 'Method');
+define('TABLE_HEADING_SHIPPING_COST', 'Ship Cost');
+//MVS End
 
 define('TABLE_HEADING_COMMENTS', 'Comments');
 define('TABLE_HEADING_PRODUCTS_MODEL', 'Model');

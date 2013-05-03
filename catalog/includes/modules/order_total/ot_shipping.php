@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: ot_shipping.php,v 1.15 2003/02/07 22:01:57 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2007 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class ot_shipping {
@@ -39,7 +39,7 @@
         }
 
         if ( ($pass == true) && ( ($order->info['total'] - $order->info['shipping_cost']) >= MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING_OVER) ) {
-          $order->info['shipping_method'] = FREE_SHIPPING_TITLE;
+          $order->info['shipping_method'] = $this->title;
           $order->info['total'] -= $order->info['shipping_cost'];
           $order->info['shipping_cost'] = 0;
         }
@@ -58,8 +58,9 @@
 
           if (DISPLAY_PRICE_WITH_TAX == 'true') $order->info['shipping_cost'] += tep_calculate_tax($order->info['shipping_cost'], $shipping_tax);
         }
-
-        $this->output[] = array('title' => $order->info['shipping_method'] . ':',
+                        $search = array(' regimark', ' tradmrk');
+                        $replace = array('<sup>&reg;</sup>', '<sup>&trade;</sup>');
+                        $this->output[] = array('title' => str_replace($search, $replace, $order->info['shipping_method']) . ':',
                                 'text' => $currencies->format($order->info['shipping_cost'], true, $order->info['currency'], $order->info['currency_value']),
                                 'value' => $order->info['shipping_cost']);
       }

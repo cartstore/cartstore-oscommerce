@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: newsletters.php,v 1.5 2002/03/08 22:10:08 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
 define('HEADING_TITLE', 'Newsletter Manager');
@@ -28,7 +27,7 @@ define('TEXT_NEWSLETTER_DATE_SENT', 'Date Sent:');
 
 define('TEXT_INFO_DELETE_INTRO', 'Are you sure you want to delete this newsletter?');
 
-define('TEXT_PLEASE_WAIT', 'Please wait .. sending emails ..<br /><br />Please do not interrupt this process!');
+define('TEXT_PLEASE_WAIT', 'Please wait .. sending emails ..<br><br>Please do not interrupt this process!');
 define('TEXT_FINISHED_SENDING_EMAILS', 'Finished sending e-mails!');
 
 define('ERROR_NEWSLETTER_TITLE', 'Error: Newsletter title required');

@@ -1,33 +1,36 @@
 <?php
 /*
-  $Id$
+  $Id: localization.php,v 1.16 2003/07/09 01:18:53 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
-
-  $cl_box_groups[] = array(
-    'heading' => BOX_HEADING_LOCALIZATION,
-    'apps' => array(
-      array(
-        'code' => FILENAME_CURRENCIES,
-        'title' => BOX_LOCALIZATION_CURRENCIES,
-        'link' => tep_href_link(FILENAME_CURRENCIES)
-      ),
-      array(
-        'code' => FILENAME_LANGUAGES,
-        'title' => BOX_LOCALIZATION_LANGUAGES,
-        'link' => tep_href_link(FILENAME_LANGUAGES)
-      ),
-      array(
-        'code' => FILENAME_ORDERS_STATUS,
-        'title' => BOX_LOCALIZATION_ORDERS_STATUS,
-        'link' => tep_href_link(FILENAME_ORDERS_STATUS)
-      )
-    )
-  );
 ?>
+<!-- localization //-->
+          <tr>
+            <td>
+<?php
+  $heading = array();
+  $contents = array();
+
+  $heading[] = array('text'  => BOX_HEADING_LOCALIZATION,
+                     'link'  => tep_href_link(FILENAME_CURRENCIES, 'selected_box=localization'));
+
+  if ($selected_box == 'localization') {
+    $contents[] = array('text'  => 
+	
+	 tep_admin_files_boxes(FILENAME_CURRENCIES, BOX_LOCALIZATION_CURRENCIES) .
+	 
+	  tep_admin_files_boxes(FILENAME_LANGUAGES, BOX_LOCALIZATION_LANGUAGES) .
+	   tep_admin_files_boxes(FILENAME_ORDERS_STATUS, BOX_LOCALIZATION_ORDERS_STATUS));
+  }
+
+  $box = new box;
+  echo $box->menuBox($heading, $contents);
+?>
+            </td>
+          </tr>
+<!-- localization_eof //-->

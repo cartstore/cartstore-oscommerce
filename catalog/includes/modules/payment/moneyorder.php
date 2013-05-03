@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: moneyorder.php,v 1.10 2003/01/29 19:57:14 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class moneyorder {

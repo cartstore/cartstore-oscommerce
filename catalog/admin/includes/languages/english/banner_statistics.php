@@ -1,13 +1,12 @@
 <?php
 /*
-  $Id$
+  $Id: banner_statistics.php,v 1.1 2002/05/07 23:07:11 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2002 osCommerce
-
-  Released under the GNU General Public License
+  Copyright (c) 2008 Adoovo Inc. USA
+  GNU General Public License Compatible
 */
 
 define('HEADING_TITLE', 'Banner Statistics');
@@ -16,7 +15,7 @@ define('TABLE_HEADING_SOURCE', 'Source');
 define('TABLE_HEADING_VIEWS', 'Views');
 define('TABLE_HEADING_CLICKS', 'Clicks');
 
-define('TEXT_BANNERS_DATA', 'D<br />a<br />t<br />a');
+define('TEXT_BANNERS_DATA', 'D<br>a<br>t<br>a');
 define('TEXT_BANNERS_DAILY_STATISTICS', '%s Daily Statistics For %s %s');
 define('TEXT_BANNERS_MONTHLY_STATISTICS', '%s Monthly Statistics For %s');
 define('TEXT_BANNERS_YEARLY_STATISTICS', '%s Yearly Statistics');

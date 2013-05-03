@@ -1,108 +1,94 @@
 <?php
 /*
-  $Id$
+ $Id: password_forgotten.php,v 1.50 2003/06/05 23:28:24 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+ CartStore eCommerce Software, for The Next Generation
+ http://www.cartstore.com
 
-  Copyright (c) 2012 osCommerce
+ Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
-*/
+ GNU General Public License Compatible
+ */
 
-  require('includes/application_top.php');
+require ('includes/application_top.php');
 
-  require(DIR_WS_LANGUAGES . $language . '/' . FILENAME_PASSWORD_FORGOTTEN);
+require (DIR_WS_LANGUAGES . $language . '/' . FILENAME_PASSWORD_FORGOTTEN);
 
-  $password_reset_initiated = false;
+if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
+	$email_address = tep_db_prepare_input($_POST['email_address']);
 
-  if (isset($HTTP_GET_VARS['action']) && ($HTTP_GET_VARS['action'] == 'process') && isset($HTTP_POST_VARS['formid']) && ($HTTP_POST_VARS['formid'] == $sessiontoken)) {
-    $email_address = tep_db_prepare_input($HTTP_POST_VARS['email_address']);
+	$check_customer_query = tep_db_query("select customers_firstname, customers_lastname, customers_password, customers_id from " . TABLE_CUSTOMERS . " where customers_email_address = '" . tep_db_input($email_address) . "'");
+	if (tep_db_num_rows($check_customer_query)) {
+		$check_customer = tep_db_fetch_array($check_customer_query);
 
-    $check_customer_query = tep_db_query("select customers_firstname, customers_lastname, customers_id from " . TABLE_CUSTOMERS . " where customers_email_address = '" . tep_db_input($email_address) . "'");
-    if (tep_db_num_rows($check_customer_query)) {
-      $check_customer = tep_db_fetch_array($check_customer_query);
+		$new_password = tep_create_random_value(ENTRY_PASSWORD_MIN_LENGTH);
+		$crypted_password = tep_encrypt_password($new_password);
 
-      $actionRecorder = new actionRecorder('ar_reset_password', $check_customer['customers_id'], $email_address);
+		tep_db_query("update " . TABLE_CUSTOMERS . " set customers_password = '" . tep_db_input($crypted_password) . "' where customers_id = '" . (int)$check_customer['customers_id'] . "'");
 
-      if ($actionRecorder->canPerform()) {
-        $actionRecorder->record();
+		tep_mail($check_customer['customers_firstname'] . ' ' . $check_customer['customers_lastname'], $email_address, EMAIL_PASSWORD_REMINDER_SUBJECT, sprintf(EMAIL_PASSWORD_REMINDER_BODY, $new_password), STORE_OWNER, STORE_OWNER_EMAIL_ADDRESS);
 
-        $reset_key = tep_create_random_value(40);
+		$messageStack -> add_session('login', SUCCESS_PASSWORD_SENT, 'success');
+		tep_redirect(tep_href_link(FILENAME_LOGIN, '', 'SSL'));
+	} else {
+		$messageStack -> add('password_forgotten', TEXT_NO_EMAIL_ADDRESS_FOUND);
+	}
+}
 
-        tep_db_query("update " . TABLE_CUSTOMERS_INFO . " set password_reset_key = '" . tep_db_input($reset_key) . "', password_reset_date = now() where customers_info_id = '" . (int)$check_customer['customers_id'] . "'");
+$breadcrumb -> add(NAVBAR_TITLE_1, tep_href_link(FILENAME_LOGIN, '', 'SSL'));
+$breadcrumb -> add(NAVBAR_TITLE_2, tep_href_link(FILENAME_PASSWORD_FORGOTTEN, '', 'SSL'));
 
-        $reset_key_url = tep_href_link(FILENAME_PASSWORD_RESET, 'account=' . urlencode($email_address) . '&key=' . $reset_key, 'SSL', false);
+require (DIR_WS_INCLUDES . 'header.php');
 
-        if ( strpos($reset_key_url, '&amp;') !== false ) {
-          $reset_key_url = str_replace('&amp;', '&', $reset_key_url);
-        }
+require (DIR_WS_INCLUDES . 'column_left.php');
+ ?>
 
-        tep_mail($check_customer['customers_firstname'] . ' ' . $check_customer['customers_lastname'], $email_address, EMAIL_PASSWORD_RESET_SUBJECT, sprintf(EMAIL_PASSWORD_RESET_BODY, $reset_key_url), STORE_OWNER, STORE_OWNER_EMAIL_ADDRESS);
+<table>
+	<tr>
 
-        $password_reset_initiated = true;
-      } else {
-        $actionRecorder->record(false);
+		<td width="100%" valign="top">
+			
 
-        $messageStack->add('password_forgotten', sprintf(ERROR_ACTION_RECORDER, (defined('MODULE_ACTION_RECORDER_RESET_PASSWORD_MINUTES') ? (int)MODULE_ACTION_RECORDER_RESET_PASSWORD_MINUTES : 5)));
-      }
-    } else {
-      $messageStack->add('password_forgotten', TEXT_NO_EMAIL_ADDRESS_FOUND);
-    }
-  }
+		<?php echo tep_draw_form('password_forgotten', tep_href_link(FILENAME_PASSWORD_FORGOTTEN, 'action=process', 'SSL')); ?>
+		<h1><?php echo HEADING_TITLE; ?></h1>
+		
 
-  $breadcrumb->add(NAVBAR_TITLE_1, tep_href_link(FILENAME_LOGIN, '', 'SSL'));
-  $breadcrumb->add(NAVBAR_TITLE_2, tep_href_link(FILENAME_PASSWORD_FORGOTTEN, '', 'SSL'));
+	
+		<?php
+if ($messageStack->size('password_forgotten') > 0) {
+		?>
+		
 
-  require(DIR_WS_INCLUDES . 'template_top.php');
-?>
+	<?php echo $messageStack -> output('password_forgotten'); ?>
+			
 
-<h1><?php echo HEADING_TITLE; ?></h1>
+		
+		<?php
+		}
+		?>
+		
+<p><?php echo TEXT_MAIN; ?></p>
 
-<?php
-  if ($messageStack->size('password_forgotten') > 0) {
-    echo $messageStack->output('password_forgotten');
-  }
+<?php echo '<b>' . ENTRY_EMAIL_ADDRESS . '</b> ' . tep_draw_input_field('email_address'); ?>
 
-  if ($password_reset_initiated == true) {
-?>
+		
+<table border="0" width="100%" cellspacing="0" cellpadding="2">
+	<tr>
+	
+		<td><?php echo '<a class="button" href="' . tep_href_link(FILENAME_LOGIN, '', 'SSL') . '">' . IMAGE_BUTTON_BACK . '</a>'; ?></td>
+		<td align="right"><?php echo tep_image_submit('button_continue.gif', IMAGE_BUTTON_CONTINUE); ?></td>
 
-<div class="contentContainer">
-  <div class="contentText">
-    <?php echo TEXT_PASSWORD_RESET_INITIATED; ?>
-  </div>
-</div>
+		</tr>
+		</table>
 
-<?php
-  } else {
-?>
-
-<?php echo tep_draw_form('password_forgotten', tep_href_link(FILENAME_PASSWORD_FORGOTTEN, 'action=process', 'SSL'), 'post', '', true); ?>
-
-<div class="contentContainer">
-  <div class="contentText">
-    <div><?php echo TEXT_MAIN; ?></div>
-
-    <table border="0" width="100%" cellspacing="0" cellpadding="2">
-      <tr>
-        <td class="fieldKey"><?php echo ENTRY_EMAIL_ADDRESS; ?></td>
-        <td class="fieldValue"><?php echo tep_draw_input_field('email_address'); ?></td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="buttonSet">
-    <span class="buttonAction"><?php echo tep_draw_button(IMAGE_BUTTON_CONTINUE, 'triangle-1-e', null, 'primary'); ?></span>
-
-    <?php echo tep_draw_button(IMAGE_BUTTON_BACK, 'triangle-1-w', tep_href_link(FILENAME_LOGIN, '', 'SSL')); ?>
-  </div>
-</div>
-
-</form>
+</form></td>
+	</tr>
+</table>
 
 <?php
-  }
+require (DIR_WS_INCLUDES . 'column_right.php');
 
-  require(DIR_WS_INCLUDES . 'template_bottom.php');
-  require(DIR_WS_INCLUDES . 'application_bottom.php');
-?>
+require (DIR_WS_INCLUDES . 'footer.php');
+
+require (DIR_WS_INCLUDES . 'application_bottom.php');
+ ?>

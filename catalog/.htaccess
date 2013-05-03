@@ -1,38 +1,90 @@
-# $Id$
-#
-# This is used with Apache WebServers
-#
-# For this to work, you must include the parameter 'Options' to
-# the AllowOverride configuration
-#
-# Example:
-#
-# <Directory "/usr/local/apache/htdocs">
-#   AllowOverride Options
-# </Directory>
-#
-# 'All' with also work. (This configuration is in the
-# apache/conf/httpd.conf file)
 
-# The following makes adjustments to the SSL protocol for Internet
-# Explorer browsers
 
-#<IfModule mod_setenvif.c>
-#  <IfDefine SSL>
-#    SetEnvIf User-Agent ".*MSIE.*" \
-#             nokeepalive ssl-unclean-shutdown \
-#             downgrade-1.0 force-response-1.0
-#  </IfDefine>
-#</IfModule>
+<IfModule mod_php4.c>
 
-# If Search Engine Friendly URLs do not work, try enabling the
-# following Apache configuration parameter
+ php_value session.use_trans_sid 0
 
-# AcceptPathInfo On
+ php_value register_globals 0
 
-# Fix certain PHP values
-# (commented out by default to prevent errors occuring on certain
-# servers)
+ php_value register_long_arrays 0
 
-# php_value session.use_trans_sid 0
-# php_value register_globals 1
+</IfModule>
+
+<IfModule mod_php5.c>
+
+ php_value session.use_trans_sid 0
+
+ php_value register_globals 0
+
+ php_value register_long_arrays 0
+ 
+ php_value newrelic.appname "dev.cartstore.com"
+ php_flag newrelic.enabled on
+
+</IfModule>
+
+
+
+RewriteEngine On
+
+RewriteBase /
+
+#Options +FollowSymLinks
+
+RewriteRule ^(.*)-p-(.*).html$ product_info.php?products_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-c-(.*).html$ index.php?cPath=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-c-(.*).html$ index_mobile.php?cPath=$2&%{QUERY_STRING}
+
+
+RewriteRule ^(.*)-m-([0-9]+).html$ index.php?manufacturers_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-pi-([0-9]+).html$ popup_image.php?pID=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-t-([0-9]+).html$ articles.php?tPath=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-a-([0-9]+).html$ article_info.php?articles_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-pr-([0-9]+).html$ product_reviews.php?products_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-pri-([0-9]+).html$ product_reviews_info.php?products_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-i-([0-9]+).html$ information.php?info_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-n-(.*).html$ newsdesk_info.php?newsdesk_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-nc-(.*).html$ newsdesk_index.php?newsPath=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-nri-(.*).html$ newsdesk_reviews_info.php?newsdesk_id=$2&%{QUERY_STRING}
+
+RewriteRule ^(.*)-nra-(.*).html$ newsdesk_reviews_article.php?newsdesk_id=$2&%{QUERY_STRING}
+
+
+
+#RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|\%3D) [OR]
+
+#RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [OR]
+
+#RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+
+#RewriteCond %{QUERY_STRING} (\<|%3C).*iframe.*(\>|%3E) [NC,OR]
+
+#RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+
+#RewriteCond %{QUERY_STRING} ^(.*)cPath=http://(.*)$ [NC,OR]
+
+#RewriteCond %{QUERY_STRING} ^(.*)/self/(.*)$ [NC,OR]
+
+#RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+
+#RewriteRule ^(.*)$ banned.php [L]
+
+#RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+
+#RewriteRule .* - [F]
+
+
+
+ 
+ 

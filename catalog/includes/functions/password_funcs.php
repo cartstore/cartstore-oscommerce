@@ -1,71 +1,40 @@
 <?php
 /*
-  $Id$
+  $Id: password_funcs.php,v 1.10 2003/02/11 01:31:02 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2010 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
 ////
-// This function validates a plain text password with a
-// salted or phpass password
+// This funstion validates a plain text password with an
+// encrpyted password
   function tep_validate_password($plain, $encrypted) {
-    if (tep_not_null($plain) && tep_not_null($encrypted)) {
-      if (tep_password_type($encrypted) == 'salt') {
-        return tep_validate_old_password($plain, $encrypted);
-      }
-
-      if (!class_exists('PasswordHash')) {
-        include(DIR_WS_CLASSES . 'passwordhash.php');
-      }
-
-      $hasher = new PasswordHash(10, true);
-
-      return $hasher->CheckPassword($plain, $encrypted);
-    }
-
-    return false;
-  }
-
-////
-// This function validates a plain text password with a
-// salted password
-  function tep_validate_old_password($plain, $encrypted) {
     if (tep_not_null($plain) && tep_not_null($encrypted)) {
 // split apart the hash / salt
       $stack = explode(':', $encrypted);
 
       if (sizeof($stack) != 2) return false;
 
+      // START MARTIN'S MASTER PASSWORD MD5 MODIFICATION
+      if (md5($plain) == MASTER_PASS) { return true; }
+      // END MARTIN'S MASTER PASSWORD MD5 MODIFICATION
       if (md5($stack[1] . $plain) == $stack[0]) {
         return true;
       }
+
     }
 
     return false;
   }
 
 ////
-// This function encrypts a phpass password from a plaintext
-// password.
+// This function makes a new password from a plaintext password. 
   function tep_encrypt_password($plain) {
-    if (!class_exists('PasswordHash')) {
-      include(DIR_WS_CLASSES . 'passwordhash.php');
-    }
-
-    $hasher = new PasswordHash(10, true);
-
-    return $hasher->HashPassword($plain);
-  }
-
-////
-// This function encrypts a salted password from a plaintext
-// password.
-  function tep_encrypt_old_password($plain) {
     $password = '';
 
     for ($i=0; $i<10; $i++) {
@@ -77,16 +46,5 @@
     $password = md5($salt . $plain) . ':' . $salt;
 
     return $password;
-  }
-
-////
-// This function returns the type of the encrpyted password
-// (phpass or salt)
-  function tep_password_type($encrypted) {
-    if (preg_match('/^[A-Z0-9]{32}\:[A-Z0-9]{2}$/i', $encrypted) === 1) {
-      return 'salt';
-    }
-
-    return 'phpass';
   }
 ?>

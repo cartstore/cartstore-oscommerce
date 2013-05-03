@@ -1,20 +1,20 @@
 <?php
 /*
-  $Id$
+  $Id: email.php,v 1.12 2003/06/17 17:29:44 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 
   mail.php - a class to assist in building mime-HTML eMails
 
   The original class was made by Richard Heyes <richard@phpguru.org>
   and can be found here: http://www.phpguru.org
 
-  Renamed and Modified by Jan Wildeboer for osCommerce
+  Renamed and Modified by Jan Wildeboer for CartStore
 */
 
   class email {
@@ -156,7 +156,7 @@
  */
 
     function add_html($html, $text = NULL, $images_dir = NULL) {
-      $this->html = tep_convert_linefeeds(array("\r\n", "\n", "\r"), '<br />', $html);
+      $this->html = tep_convert_linefeeds(array("\r\n", "\n", "\r"), '<br>', $html);
       $this->html_text = tep_convert_linefeeds(array("\r\n", "\n", "\r"), $this->lf, $text);
 
       if (isset($images_dir)) $this->find_html_images($images_dir);

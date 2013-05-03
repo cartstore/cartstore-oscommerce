@@ -1,18 +1,18 @@
 <?php
 /*
-  $Id$
+  $Id: mime.php,v 1.4 2003/06/11 22:24:34 dgw_ Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
   mime.php - a class to assist in building mime-HTML eMails
 
   The original class was made by Richard Heyes <richard@phpguru.org>
   and can be found here: http://www.phpguru.org
 
-  Renamed and Modified by Jan Wildeboer for osCommerce
+  Renamed and Modified by Jan Wildeboer for CartStore
 */
 
   class mime {

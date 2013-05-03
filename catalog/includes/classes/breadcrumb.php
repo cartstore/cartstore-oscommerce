@@ -1,13 +1,13 @@
 <?php
 /*
-  $Id$
+  $Id: breadcrumb.php,v 1.3 2003/02/11 00:04:50 hpdl Exp $
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+  CartStore eCommerce Software, for The Next Generation
+  http://www.cartstore.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2008 Adoovo Inc. USA
 
-  Released under the GNU General Public License
+  GNU General Public License Compatible
 */
 
   class breadcrumb {
@@ -29,14 +29,24 @@
       $trail_string = '';
 
       for ($i=0, $n=sizeof($this->_trail); $i<$n; $i++) {
-        if (isset($this->_trail[$i]['link']) && tep_not_null($this->_trail[$i]['link'])) {
-          $trail_string .= '<a href="' . $this->_trail[$i]['link'] . '" class="headerNavigation">' . $this->_trail[$i]['title'] . '</a>';
+
+
+if($i>1){
+		
+		if (isset($this->_trail[$i]['link']) && tep_not_null($this->_trail[$i]['link'])) {
+          $trail_string .= '<a href="' . $this->_trail[$i]['link'] . '" class="linkup">' . $this->_trail[$i]['title'] . '</a>';
         } else {
           $trail_string .= $this->_trail[$i]['title'];
         }
 
+
         if (($i+1) < $n) $trail_string .= $separator;
-      }
+
+
+}
+
+      
+	  }
 
       return $trail_string;
     }

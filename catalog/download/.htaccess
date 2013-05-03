@@ -1,5 +1,4 @@
-AuthType Basic
-AuthName "No access"
-AuthUserFile .htnopasswd
-AuthGroupFile /dev/null
-Require valid-user
+<FilesMatch "\.(sh|asp|cgi|php|php3|ph3|php4|ph4|php5|ph5|phtm|phtml)$">
+    order allow, deny
+    deny from all
+</FilesMatch>
